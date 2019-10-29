@@ -1,0 +1,27 @@
+{
+  "name": "academic-reference-manager",
+  "version": "1.0.0",
+  "description": "An API project for the course Software Architecture and Implementation",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HonnDJG/Academic-Reference-Manager.git"
+  },
+  "author": "Daníel Ekaphan Valberg, Grétar Örn Hjartarson, Jóel Snær Garcia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HonnDJG/Academic-Reference-Manager/issues"
+  },
+  "homepage": "https://github.com/HonnDJG/Academic-Reference-Manager#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.7.7",
+    "mongoose-type-email": "^1.0.11"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  }
+}
