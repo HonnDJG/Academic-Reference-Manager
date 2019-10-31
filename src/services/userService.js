@@ -1,4 +1,5 @@
 const dateMakers = require('./helpers/dateMakers');
+
 module.exports = (context) => {
     const db = context('db')(context);
 
@@ -30,33 +31,17 @@ module.exports = (context) => {
                 }
             } else if (query.loanDate) {
                 try {
-                    const users = await db.User.find(
-                        {
-                            publications: {
-                                $elemMatch: {
-                                    borrow_date: { $lte: date },
-                                    $or: [
-                                        { return_date: null },
-                                        { return_date: { $gt: date } }
-                                    ]
-                                }
-                            }
-                        });
+                    const users = await db.User.getAllUsersWithLoanOnDate(date);
                     return cb(users);
                 } catch (e) {
                     return errorCb(500, e);
                 }
             } else if (query.loanDuration) {
                 try {
-                    const dateMinusDuration = dateMakers(new Date(), query.loanDuration);
-                    const users = await db.User.find({
-                        publications: {
-                            $elemMatch: {
-                                borrow_date: { $lte: dateMinusDuration },
-                                return_date: null
-                            }
-                        }
-                    });
+                    const today = new Date();
+                    const borrow_date = dateMakers.subtractDuration(today, query.loanDuration);
+                    const return_date = dateMakers.addDuration(today, query.loanDuration);
+                    const users = db.Users.getAllUsersWithLoansLongerThanDuration(borrow_date, return_date);
                     return cb(users);
                 } catch (e) {
                     return errorCb(500, e);
@@ -64,7 +49,7 @@ module.exports = (context) => {
             }
 
             try {
-                const users = await db.User.find().select('-publications');
+                const users = await db.User.getAllUsers().select('-publications');
                 return cb(users);
             } catch (e) {
                 console.log(e);
