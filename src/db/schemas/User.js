@@ -28,4 +28,34 @@ const UserSchema = mongoose.Schema(
 	}
 );
 
+
+UserSchema.statics = {
+	getAllUsers: function () {
+		return this.find({});
+	},
+	getAllUsersWithLoanOnDate: function (date) {
+		return this.find({
+			publications: {
+				$elemMatch: {
+					borrow_date: { $lte: date },
+					$or: [
+						{ return_date: null },
+						{ return_date: { $gt: date } }
+					]
+				}
+			}
+		});
+	},
+	getAllUsersWithLoansLongerThanDuration: function (borrow_date, return_date) {
+		return this.find({
+			publications: {
+				$elemMatch: {
+					borrow_date: { $lte: borrow_date }
+				}
+			}
+		});
+	}
+
+}
+
 module.exports = UserSchema;
