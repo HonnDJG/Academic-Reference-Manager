@@ -1,19 +1,18 @@
 const inject = require('./inject.js');
-const express = require('express');
-const db = require('../db/db');
-const server = require('../server');
 
-const publicationsRoute = require('../routes/publicationsRoute');
-const usersRoute = require('../routes/usersRoute');
 
 module.exports = {
     newContext: () => {
         return inject({
-            express,
-            db,
-            server,
-            publicationsRoute,
-            usersRoute,
+            express: require('express'),
+            db: require('../db/db'),
+            server: require('../server'),
+            publicationRoute: require('../routes/publicationRoute'),
+            userRoute: require('../routes/userRoute'),
+            config: require('../config'),
+            publicationService: require('../services/publicationService'),
+            userService: require('../services/userService'),
+            mongoose: require('mongoose'),
         });
     },
 };

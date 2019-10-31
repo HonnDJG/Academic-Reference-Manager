@@ -1,11 +1,15 @@
 module.exports = (context) => {
     const express = context("express");
     const router = express.Router();
+    const userService = context('userService')(context);
 
     // users information
     router.get("/", (req, res) => {
-        // TODO: Get information about all users
-        res.send("Get information about all users");
+        userService.getAllUsers(
+            req.query,
+            (result) => res.send(result),
+            (status, error) => res.status(status).send(error)
+        )
     });
 
     router.post("/", (req, res) => {
@@ -14,8 +18,12 @@ module.exports = (context) => {
     });
 
     router.get("/:user_id", (req, res) => {
-        // TODO: Get information about a given user (e.g. borrowing history)
-        res.send("Get information about a given user (e.g. borrowing history)");
+        const { user_id } = req.params;
+        userService.getUserById(
+            user_id,
+            (result) => res.send(result),
+            (status, error) => res.status(status).send(error)
+        )
     });
 
     router.delete("/:user_id", (req, res) => {
