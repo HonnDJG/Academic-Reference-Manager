@@ -5,43 +5,29 @@ module.exports = (context) => {
 
     return {
         getAllUsers: async (query, cb, errorCb) => {
-            const date = new Date(query.loanDate);
-            if (query.loanDate && query.loanDuration) {
+            const query_date = new Date(query.LoanDate);
+            if (query.LoanDate && query.LoanDuration) {
                 try {
-                    const now = new Date();
-                    const date = new Date(query.loanDate);
-                    const datePlusDuration = dateMakers.addDuration(date, query.loanDuration);
-                    // TODO: fix for newly borrowed
-                    const users = await db.User.find(
-                        {
-                            publications: {
-                                $elemMatch: {
-                                    borrow_date: date,
-                                    $or: [
-                                        { return_date: { $gte: datePlusDuration } },
-                                        { return_date: null }
-                                    ]
-                                }
-                            }
-                        }
-                    );
+                    const borrow_date = dateMakers.subtractDuration(query_date, query.LoanDuration);
+                    const users = await db.User.getAllUsersWithLoansLongerThanDurationOnDate(borrow_date, query_date);
+                    return cb(users);
+                } catch (e) {
+                    console.log(e);
+                    return errorCb(500, e);
+                }
+            } else if (query.LoanDate) {
+                try {
+                    const users = await db.User.getAllUsersWithOnGoingLoanOnDate(query_date);
                     return cb(users);
                 } catch (e) {
                     return errorCb(500, e);
                 }
-            } else if (query.loanDate) {
-                try {
-                    const users = await db.User.getAllUsersWithLoanOnDate(date);
-                    return cb(users);
-                } catch (e) {
-                    return errorCb(500, e);
-                }
-            } else if (query.loanDuration) {
+            } else if (query.LoanDuration) {
                 try {
                     const today = new Date();
-                    const borrow_date = dateMakers.subtractDuration(today, query.loanDuration);
-                    const return_date = dateMakers.addDuration(today, query.loanDuration);
-                    const users = db.Users.getAllUsersWithLoansLongerThanDuration(borrow_date, return_date);
+                    const borrow_date = dateMakers.subtractDuration(today, query.LoanDuration);
+                    const return_date = dateMakers.addDuration(today, query.LoanDuration);
+                    const users = await db.User.getAllUsersWithLoansLongerThanDuration(borrow_date, return_date);
                     return cb(users);
                 } catch (e) {
                     return errorCb(500, e);

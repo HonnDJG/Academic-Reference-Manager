@@ -33,14 +33,14 @@ UserSchema.statics = {
 	getAllUsers: function () {
 		return this.find({});
 	},
-	getAllUsersWithLoanOnDate: function (date) {
+	getAllUsersWithLoanOnDate: function (query_date) {
 		return this.find({
 			publications: {
 				$elemMatch: {
-					borrow_date: { $lte: date },
+					borrow_date: { $lte: query_date },
 					$or: [
 						{ return_date: null },
-						{ return_date: { $gt: date } }
+						{ return_date: { $gt: query_date } }
 					]
 				}
 			}
@@ -50,12 +50,41 @@ UserSchema.statics = {
 		return this.find({
 			publications: {
 				$elemMatch: {
-					borrow_date: { $lte: borrow_date }
+					borrow_date: { $lte: borrow_date },
+					$or: [
+						{ return_date: null },
+						{ return_date: { $gt: return_date } }
+					]
 				}
 			}
 		});
+	},
+	getAllUsersWithLoansLongerThanDurationOnDate: function (borrow_date, query_date) {
+		return this.find({
+			publications: {
+				$elemMatch: {
+					borrow_date: { $lte: borrow_date },
+					$or: [
+						{ return_date: { $gte: query_date } },
+						{ return_date: null }
+					]
+				}
+			}
+		})
+	},
+	getAllUsersWithOnGoingLoanOnDate: function (query_date) {
+		return this.find({
+			publications: {
+				$elemMatch: {
+					borrow_date: { $lte: query_date },
+					$or: [
+						{ return_date: null },
+						{ return_date: { $gte: query_date } }
+					]
+				}
+			}
+		})
 	}
-
 }
 
 module.exports = UserSchema;
