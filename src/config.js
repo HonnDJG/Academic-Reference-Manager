@@ -1,6 +1,20 @@
 module.exports = (context) => ({
-    // mongoDB
-    mongoUser: "admin",
-    mongoPass: "ARMadmin",
-    mongoCollection: "production"
+    development: {
+        // mongoDB
+        mongoUser: "admin",
+        mongoPass: "ARMadmin",
+        mongoCollection: "development"
+    },
+    test: {
+        // mongodb
+        mongoUser: "admin",
+        mongoPass: "ARMadmin",
+        mongoCollection: "test"
+    },
+    production: {
+        mongoUser: "admin",
+        mongoPass: "ARMadmin",
+        mongoCollection: "production"
+    }
+
 })
