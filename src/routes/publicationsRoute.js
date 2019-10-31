@@ -1,11 +1,19 @@
 module.exports = (context) => {
     const express = context("express");
     const router = express.Router();
-
+    const publicationService = require("../services/publicationsService");
     // publication information
     router.get("/", (req, res) => {
         // TODO: Get information about all Publications
-        res.send("Get information about all Publications");
+        publicationService.getAllPublications(
+            function(publications){
+                return res.status(200).json(publications);
+            },
+            function(err) {
+                return res.status(400).json(err);
+            }
+        );
+        res.send();
     });
 
     router.post("/", (req, res) => {
