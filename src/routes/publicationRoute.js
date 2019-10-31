@@ -13,12 +13,20 @@ module.exports = (context) => {
 
     router.post("/", (req, res) => {
         // TODO: Add a publication
-        res.send("Add a publication");
+        publicationService.createPublication(
+            req.body,
+            (result) => res.send(result),
+            (status, error) => res.status(status).send(error)
+        );
     });
 
     router.get("/:publication_id", (req, res) => {
         // TODO: Get information about a specific publication (including borrowing history)
-        res.send("Get information about a specific publication (including borrowing history)");
+        publicationService.getPublicationById(
+            req,
+            (result) => res.send(result),
+            (status, error) => res.status(status).send(error)
+        );
     });
 
 

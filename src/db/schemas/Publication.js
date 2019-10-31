@@ -14,7 +14,17 @@ const PublicationSchema = mongoose.Schema(
         versionKey: false,
     }
 );
-PublicationSchema.static()
+PublicationSchema.statics = {
+    getAllPublications: function() {
+        return this.find({});
+    },
+    createPublication: function(publication) {
+        return this.create(publication);
+    },
+    getPublicationById: function(id) {
+        return this.findById(id);
+    }
+}
 
 module.exports = PublicationSchema;
 
