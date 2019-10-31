@@ -2,6 +2,7 @@ module.exports = (context) => {
     const express = context("express");
     const app = express();
     const port = process.env.PORT || 5000;
+    app.use(express.json());
 
     const publicationRoute = context("publicationRoute")(context);
     const userRoute = context("userRoute")(context);
