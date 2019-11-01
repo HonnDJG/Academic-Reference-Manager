@@ -1,4 +1,5 @@
-const dateMakers = require('../helpers/dateMakers');
+const dateMakersFactory = require('../helpers/dateMakers');
+const dateMakers = dateMakersFactory();
 
 describe("Test date makers", () => {
     it("Should return a date 30 days prior with string input", () => {

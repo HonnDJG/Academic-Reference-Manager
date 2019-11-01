@@ -16,7 +16,6 @@ module.exports = (context) => {
         })
 
         if (req.query.loanDate) {
-            console.log(req.query.loanDate);
             req.query.loanDate = new Date(req.query.loanDate);
 
             if (req.query.loanDate == "Invalid Date") {

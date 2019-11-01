@@ -51,6 +51,10 @@ const run = async (context) => {
     } catch (e) {
         console.log(e);
     }
+
+    console.log("Done!");
+
+    return process.exit(0);
 };
 
-run(context);
+await run(context);

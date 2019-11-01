@@ -2,9 +2,10 @@ module.exports = (context) => {
     const express = context("express");
     const router = express.Router();
     const publicationService = context('publicationService')(context);
+    const permit = context('permission');
 
     /// GET
-    router.get("/", ( req, res) => {
+    router.get("/", (req, res) => {
         // TODO: Get information about all Publications
         publicationService.getAllPublications(
             (result) => res.send(result),
@@ -12,7 +13,7 @@ module.exports = (context) => {
         );
     });
 
-    router.get("/reviews", ( req, res) => {
+    router.get("/reviews", (req, res) => {
         // TODO: Get reviews for all Publications
         publicationService.getAllReviews(
             (result) => res.send(result),
@@ -29,7 +30,7 @@ module.exports = (context) => {
         );
     });
 
-    router.get("/:publication_id", ( req, res) => {
+    router.get("/:publication_id", (req, res) => {
         // TODO: Get information about a specific publication (including borrowing history)
         publicationService.getPublicationById(
             req.params.publication_id,
@@ -50,7 +51,7 @@ module.exports = (context) => {
 
     /// POST
 
-    router.post("/", ( req, res) => {
+    router.post("/", (req, res) => {
         // TODO: Add a publication
         publicationService.createPublication(
             req.body,
@@ -61,7 +62,7 @@ module.exports = (context) => {
 
     /// DELETE
 
-    router.delete("/:publication_id", ( req, res) => {
+    router.delete("/:publication_id", (req, res) => {
         publicationService.removePublicationById(
             req.params.publication_id,
             (result) => res.send(result),
@@ -71,7 +72,7 @@ module.exports = (context) => {
 
     /// UPDATE
 
-    router.put("/:publication_id", ( req, res) => {
+    router.put("/:publication_id", (req, res) => {
         publicationService.updatePublicationById(
             req.params.publication_id,
             req.body,
@@ -80,9 +81,9 @@ module.exports = (context) => {
         );
     });
 
-    
 
-    
+
+
 
     router.put("/:publication_id/reviews/:user_id", (req, res) => {
         // TODO: Get a user’s review for a publication
