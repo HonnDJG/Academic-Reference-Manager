@@ -8,17 +8,19 @@ const validUser = {
 
 let errorCaught = false;
 
-describe("Test for connection", () => {
-    beforeEach(async () => {
-        await db.User.deleteMany();
-        await db.Publication.deleteMany();
-    });
+beforeEach(async (done) => {
+    await db.User.deleteMany();
+    await db.Publication.deleteMany();
+    errorCaught = false;
+    done();
+});
 
-    afterEach(async () => {
-        await db.User.deleteMany();
-        await db.Publication.deleteMany();
-        errorCaught = false;
-    });
+afterAll(async (done) => {
+    await db.connection.close();
+    done();
+})
+
+describe("Test for connection", () => {
 
     it("User should module exist", () => {
         expect(db.User).toBeDefined();
@@ -30,19 +32,8 @@ describe("Test for connection", () => {
 });
 
 describe("Test User collection", () => {
-    beforeEach(async () => {
-        await db.User.deleteMany();
-        await db.Publication.deleteMany();
-        errorCaught = false;
-    });
 
-    afterEach(async () => {
-        await db.User.deleteMany();
-        await db.Publication.deleteMany();
-        errorCaught = false;
-    });
-
-    it("should be able to create basic a user", async () => {
+    it("should be able to create basic a user", async (done) => {
         try {
             const initialCount = await db.User.countDocuments();
             expect(initialCount).toBe(0);
@@ -57,9 +48,11 @@ describe("Test User collection", () => {
         }
 
         expect(errorCaught).toBeFalsy();
+
+        done();
     });
 
-    it("should succeed creating a user with only required", async () => {
+    it("should succeed creating a user with only required", async (done) => {
         try {
             const initialCount = await db.User.countDocuments();
             expect(initialCount).toBe(0);
@@ -71,9 +64,11 @@ describe("Test User collection", () => {
             errorCauhgt = true;
         }
         expect(errorCaught).toBeFalsy();
+
+        done();
     });
 
-    it("should fail creating an invalid user (missing all required)", async () => {
+    it("should fail creating an invalid user (missing all required)", async (done) => {
         try {
             await db.User.create({ name: "hello" })
         } catch (e) {
@@ -82,9 +77,11 @@ describe("Test User collection", () => {
         }
 
         expect(errorCaught).toBeTruthy();
+
+        done();
     });
 
-    it("should fail creating an invalid user (missing email)", async () => {
+    it("should fail creating an invalid user (missing email)", async (done) => {
         let errorCaught = false;
         try {
             await db.User.create({ first_name: "hello" })
@@ -93,9 +90,11 @@ describe("Test User collection", () => {
             errorCaught = true;
         }
         expect(errorCaught).toBeTruthy();
+
+        done();
     });
 
-    it("should fail inputting invalid email", async () => {
+    it("should fail inputting invalid email", async (done) => {
         try {
             await db.User.create({ first_name: "hello", email: "hello@games" })
         } catch (e) {
@@ -124,12 +123,12 @@ describe("Test User collection", () => {
         }
         expect(errorCaught).toBeTruthy();
 
+        done();
+    });
 
-    })
 
 
-
-    it("should fail creating a user with invalid phone number", async () => {
+    it("should fail creating a user with invalid phone number", async (done) => {
         try {
             await db.User.create({ first_name: "hello", email: "hello@games.com", phone: 123456 })
         } catch (e) {
@@ -166,10 +165,12 @@ describe("Test User collection", () => {
         }
         expect(errorCaught).toBeTruthy();
         errorCaught = false;
+
+        done();
     });
 
     describe("Borrowed publications", () => {
-        it("should fail when creating user with borrowed publications but missing required fields", async () => {
+        it("should fail when creating user with borrowed publications but missing required fields", async (done) => {
             try {
                 await db.User.create({
                     first_name: "hello",
@@ -184,8 +185,10 @@ describe("Test User collection", () => {
             }
 
             expect(errorCaught).toBeTruthy();
+
+            done();
         });
-        it("should fail when creating user with borrowed publications but missing id", async () => {
+        it("should fail when creating user with borrowed publications but missing id", async (done) => {
             try {
                 await db.User.create({
                     first_name: "hello",
@@ -202,9 +205,11 @@ describe("Test User collection", () => {
             }
 
             expect(errorCaught).toBeTruthy();
+
+            done();
         });
 
-        it("should fail when creating user with borrowed publication but missing borrow_date", async () => {
+        it("should fail when creating user with borrowed publication but missing borrow_date", async (done) => {
             try {
                 await db.User.create({
                     first_name: "hello",
@@ -221,9 +226,11 @@ describe("Test User collection", () => {
             }
 
             expect(errorCaught).toBeTruthy();
+
+            done();
         });
 
-        it("should succeed when creating user with correct borrowed publication format", async () => {
+        it("should succeed when creating user with correct borrowed publication format", async (done) => {
             try {
                 const initCount = await db.User.countDocuments();
                 await db.User.create({
@@ -246,9 +253,8 @@ describe("Test User collection", () => {
             }
 
             expect(errorCaught).toBeFalsy();
+
+            done();
         });
-    })
-
-
-
+    });
 });

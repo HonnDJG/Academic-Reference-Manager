@@ -16,6 +16,7 @@ module.exports = (context) => {
     });
 
     return {
+        connection: connection,
         User: connection.model('User', userSchema),
         Publication: connection.model('Publication', publicationSchema),
     };

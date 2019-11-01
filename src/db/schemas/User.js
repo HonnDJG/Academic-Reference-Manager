@@ -33,44 +33,18 @@ UserSchema.statics = {
 	getAllUsers: function () {
 		return this.find({});
 	},
-	getAllUsersWithLoanOnDate: function (query_date) {
-		return this.find({
-			publications: {
-				$elemMatch: {
-					borrow_date: { $lte: query_date },
-					$or: [
-						{ return_date: null },
-						{ return_date: { $gt: query_date } }
-					]
-				}
-			}
-		});
-	},
-	getAllUsersWithLoansLongerThanDuration: function (borrow_date, return_date) {
+	getAllUsersWithLoansLongerThanDurationOnDate: function (borrow_date, return_date) {
 		return this.find({
 			publications: {
 				$elemMatch: {
 					borrow_date: { $lte: borrow_date },
 					$or: [
-						{ return_date: null },
-						{ return_date: { $gt: return_date } }
-					]
-				}
-			}
-		});
-	},
-	getAllUsersWithLoansLongerThanDurationOnDate: function (borrow_date, query_date) {
-		return this.find({
-			publications: {
-				$elemMatch: {
-					borrow_date: { $lte: borrow_date },
-					$or: [
-						{ return_date: { $gte: query_date } },
+						{ return_date: { $gt: return_date } },
 						{ return_date: null }
 					]
 				}
 			}
-		})
+		});
 	},
 	getAllUsersWithOnGoingLoanOnDate: function (query_date) {
 		return this.find({
@@ -78,8 +52,8 @@ UserSchema.statics = {
 				$elemMatch: {
 					borrow_date: { $lte: query_date },
 					$or: [
-						{ return_date: null },
-						{ return_date: { $gte: query_date } }
+						{ return_date: { $gt: query_date } },
+						{ return_date: null }
 					]
 				}
 			}

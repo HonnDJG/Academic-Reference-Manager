@@ -4,12 +4,25 @@ module.exports = (context) => {
     const userService = context('userService')(context);
 
     // users information
-    router.get("/", (req, res) => {
-        userService.getAllUsers(
-            req.query,
-            (result) => res.send(result),
-            (status, error) => res.status(status).send(error)
-        )
+    router.get("/", async (req, res) => {
+        const { query } = req;
+        const { loanDate, loanDuration } = query;
+        try {
+            let users;
+            if (loanDate && loanDuration) {
+                users = await userService.getUsersByDateAndDuration(query);
+            } else if (loanDate) {
+                users = await userService.getUsersByDate(query);
+            } else if (loanDuration) {
+                users = await userService.getUsersByDuration(query);
+            } else {
+                users = await userService.getAllUsers(query);
+            }
+            res.send(users);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
     router.post("/", (req, res) => {

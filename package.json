@@ -4,7 +4,8 @@
   "description": "An API project for the course Software Architecture and Implementation",
   "main": "src/app.js",
   "scripts": {
-    "test": "NODE_ENV=test jest",
+    "test": "NODE_ENV=test jest --runInBand",
+    "test:coverage": "NODE_ENV=test jest --runInBand --coverage",
     "start": "nodemon src/app.js",
     "production": "NODE_ENV=production node src/app.js",
     "initDevData": "NODE_ENV=development node src/db/initFromData",
@@ -21,6 +22,7 @@
   },
   "homepage": "https://github.com/HonnDJG/Academic-Reference-Manager#readme",
   "dependencies": {
+    "@hapi/boom": "^8.0.1",
     "express": "^4.17.1",
     "mongoose": "^5.7.7"
   },

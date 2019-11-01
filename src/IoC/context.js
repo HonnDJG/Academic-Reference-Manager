@@ -13,6 +13,7 @@ module.exports = {
             publicationService: require('../services/publicationService'),
             userService: require('../services/userService'),
             mongoose: require('mongoose'),
+            boom: require('@hapi/boom')
         });
     },
 };
