@@ -16,7 +16,6 @@ const UserSchema = mongoose.Schema(
 		},
 		publications: [
 			{
-				_id: false,
 				publication: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'Publication' },
 				borrow_date: { type: Date, required: true },
 				return_date: { type: Date }
@@ -58,7 +57,74 @@ UserSchema.statics = {
 				}
 			}
 		})
-	}
+	},
+
+	createUser: function (user) {
+		return this.create(user);
+	},
+
+	getUserWithId: function (id) {
+		return this.findOne({
+			_id: id
+		});
+	},
+
+	deleteUser: function (id) {
+		return this.findOneAndDelete({
+			_id: id
+		});
+	},
+
+	updateUser: function (id, body) {
+		return this.findOneAndUpdate(
+			{ _id: id },
+			{ $set: body },
+			{ new: true }
+		);
+	},
+
+	getPublicationByUserId: function (id) {
+		return this.findOne(
+			{ _id: id },
+			{
+				_id: 0,
+				publications: 1
+			})
+	},
+
+	loanPublication: function (loan, uid) {
+		return this.findOneAndUpdate(
+			{ _id: uid },
+			{ $push: { publications: loan } },
+			{ new: true }
+		)
+	},
+
+	getUserswithPublication: function (pid) {
+		return this.find({
+			publications: {
+				$elemMatch: {
+					publication: pid
+				}
+			}
+
+		});
+	},
+
+	updateLoan: function (loan, uid, lid) {
+		return this.findOneAndUpdate(
+			{
+				_id: uid,
+				publications: {
+					$elemMatch: {
+						_id: lid,
+					}
+				}
+			},
+			{ $set: { "publications.$": loan } },
+			{ new: true }
+		)
+	},
 }
 
 module.exports = UserSchema;
