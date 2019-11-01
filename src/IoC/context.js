@@ -15,7 +15,8 @@ module.exports = {
             mongoose: require('mongoose'),
             boom: require('@hapi/boom'),
             dateMakers: require('../services/helpers/dateMakers'),
-            overlapChecker: require('../services/helpers/overlapChecker')
+            overlapChecker: require('../services/helpers/overlapChecker'),
+            permission: require('../utils/permission')
         });
     },
 };

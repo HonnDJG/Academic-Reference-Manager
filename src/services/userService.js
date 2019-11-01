@@ -1,12 +1,11 @@
-const dateMakers = require('./helpers/dateMakers');
-
 module.exports = (context) => {
     const db = context('db')(context);
     const boom = context('boom');
     const overlapChecker = context('overlapChecker');
+    const dateMakers = context('dateMakers')();
 
     return {
-        getAllUsers: async (query) => {
+        getAllUsers: async () => {
             try {
                 const users = await db.User.getAllUsers().select('-publications');
                 return users;

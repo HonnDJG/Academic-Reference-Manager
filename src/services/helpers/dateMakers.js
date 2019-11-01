@@ -1,4 +1,4 @@
-module.exports = {
+module.exports = (context) => ({
     addDuration: function (date, duration) {
         let _duration;
         if ((typeof duration) == 'string') {
@@ -28,4 +28,4 @@ module.exports = {
 
         return dateMinusDuration;
     },
-}
+})
