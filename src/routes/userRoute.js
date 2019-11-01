@@ -25,28 +25,47 @@ module.exports = (context) => {
         }
     });
 
-    router.post("/", (req, res) => {
-        // TODO: Add a user
-        res.send("Add a user");
+    router.post("/", async (req, res) => {
+        try {
+            user = await userService.createUser(req.body);
+            res.send(user);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
-    router.get("/:user_id", (req, res) => {
+    router.get("/:user_id", async (req, res) => {
         const { user_id } = req.params;
-        userService.getUserById(
-            user_id,
-            (result) => res.send(result),
-            (status, error) => res.status(status).send(error)
-        )
+        try {
+            user = await userService.getUserById(user_id);
+            res.send(user);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
-    router.delete("/:user_id", (req, res) => {
-        // TODO: Remove a user
-        res.send("Remove a user");
+    router.delete("/:user_id", async (req, res) => {
+        const { user_id } = req.params;
+        try {
+            user = await userService.deleteUser(user_id);
+            res.send(user);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
-    router.put("/:user_id", (req, res) => {
-        // TODO: Update a user
-        res.send("Update a user");
+    router.put("/:user_id", async (req, res) => {
+        const { user_id } = req.params;
+        try {
+            user = await userService.updateUser(user_id,req.body);
+            res.send(user);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
 
@@ -54,14 +73,25 @@ module.exports = (context) => {
 
 
     // publications related information
-    router.get("/:user_id/publications", (req, res) => {
-        // TODO: Get information about the Publications a given user has on loan
-        res.send("Get information about the Publications a given user has on loan");
+    router.get("/:user_id/publications", async (req, res) => {
+        const { user_id } = req.params;
+        try {
+            publications = await userService.getPublicationByUserId(user_id);
+            res.send(publications);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
-    router.post("/:user_id/publications/:publication_id", (req, res) => {
-        // TODO: Register a publication on loan
-        res.send("Register a publication on loan");
+    router.post("/:user_id/publications/:publication_id", async (req, res) => {
+        try {
+            loan = await userService.loanPublication(req.params.user_id, req.params.publication_id, req.body);
+            res.send(loan)
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
     router.delete("/:user_id/publications/:publication:id", (req, res) => {
@@ -69,9 +99,14 @@ module.exports = (context) => {
         res.send("Return a publication");
     });
 
-    router.put("/:user_id/publications/:publication:id", (req, res) => {
-        // TODO: Update borrowing information
-        res.send("Update borrowing information");
+    router.put("/:user_id/publications/:publication_id", async (req, res) => {
+        try {
+            loan = await userService.updateLoan(req.params.user_id, req.params.publication_id, req.body);
+            res.send(loan)
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
 
