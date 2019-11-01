@@ -13,7 +13,8 @@ module.exports = {
             publicationService: require('../services/publicationService'),
             userService: require('../services/userService'),
             mongoose: require('mongoose'),
-            boom: require('@hapi/boom')
+            boom: require('@hapi/boom'),
+            dateMakers: require('../services/helpers/dateMakers')
         });
     },
 };
