@@ -28,21 +28,33 @@ module.exports = {
             { $replaceRoot: { newRoot: "$publication" } }
         ]);
     },
-    getPublicationsOnLoanByDateAndUserId: function (u_id, date) {
+    getPublicationsOnLoanByDatesAndUserId: function (u_id, borrow_date, return_date) {
         const u_oid = ObjectId(u_id);
         return this.aggregate([
-            { $match: { user: u_oid, borrow_date: { $lte: date }, $or: [{ return_date: { $gt: date } }, { return_date: null }] } },
+            { $match: { user: u_oid, borrow_date: { $lte: borrow_date }, $or: [{ return_date: { $gt: return_date } }, { return_date: null }] } },
             { $group: { _id: null, publication: { $addToSet: "$publication" } } },
             { $unwind: "$publication" },
             { $lookup: { from: 'publications', localField: 'publication', foreignField: '_id', as: 'publication' } },
             { $unwind: "$publication" },
             { $replaceRoot: { newRoot: "$publication" } }
-        ])
+        ]);
     },
     getUsersOnLoanByDates: function (borrow_date, return_date) {
         return this.aggregate([
             { $match: { borrow_date: { $lte: borrow_date }, $or: [{ return_date: { $gt: return_date } }, { return_date: null }] } },
             { $group: { _id: null, user: { $addToSet: "$user" } } },
+            { $lookup: { from: 'publications', localField: 'publication', foreignField: '_id', as: 'publications' } },
+            { $unwind: "$user" },
+            { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
+            { $unwind: "$user" },
+            { $replaceRoot: { newRoot: "$user" } }
+        ]);
+    },
+    getUsersOnLoanByDatesAndPublicationId: function (p_id, borrow_date, return_date) {
+        return this.aggregate([
+            { $match: { publication: p_id, borrow_date: { $lte: borrow_date }, $or: [{ return_date: { $gt: return_date } }, { return_date: null }] } },
+            { $group: { _id: null, user: { $addToSet: "$user" } } },
+            { $lookup: { from: 'publications', localField: 'publication', foreignField: '_id', as: 'publications' } },
             { $unwind: "$user" },
             { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
             { $unwind: "$user" },

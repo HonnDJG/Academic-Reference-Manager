@@ -37,5 +37,16 @@ module.exports = {
 
     removeUserReview: function (p_id, u_id, review) {
         return this.findOneAndUpdate();
+    },
+
+    getRecommendationExcludingBorrowed: function (borrowed_p_id_list) {
+        return this.aggregate([
+            { $match: { publication: { $nin: borrowed_p_id_list } } },
+            { $group: { _id: '$publication', average_rating: { $avg: "$rating" } } },
+            { $lookup: { from: 'publications', localField: '_id', foreignField: '_id', as: 'publication' } },
+            { $unwind: '$publication' },
+            { $sort: { "average_rating": -1 } },
+            { $replaceRoot: { newRoot: { $mergeObjects: [{ average_rating: '$average_rating' }, "$publication"] } } },
+        ])
     }
 }

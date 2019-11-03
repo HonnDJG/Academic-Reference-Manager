@@ -19,7 +19,11 @@ module.exports = (context) => {
             const { loanDate } = query
             try {
                 const publications = await db.Loan.getPublicationsOnLoanByDates(loanDate, loanDate);
-                return publications;
+                const publicationsWithUsers = await Promise.all(await publications.map(async x => ({
+                    ...x,
+                    loaned_to: await db.Loan.getUsersOnLoanByDatesAndPublicationId(x._id, loanDate, loanDate)
+                })));
+                return publicationsWithUsers;
             } catch (e) {
                 console.log(e);
                 throwCreator.createThrow(e);
@@ -30,7 +34,7 @@ module.exports = (context) => {
 
             try {
                 await db.User.checkExistence(u_id);
-                const publications = await db.Loan.getPublicationsOnLoanByDateAndUserId(u_id, today);
+                const publications = await db.Loan.getPublicationsOnLoanByDatesAndUserId(u_id, today, today);
                 return publications;
             } catch (e) {
                 console.log(e);
@@ -44,7 +48,11 @@ module.exports = (context) => {
 
             try {
                 const publications = await db.Loan.getPublicationsOnLoanByDates(borrow_date, return_date);
-                return publications;
+                const publicationsWithUsers = await Promise.all(await publications.map(async x => ({
+                    ...x,
+                    loaned_to: await db.Loan.getUsersOnLoanByDatesAndPublicationId(x._id, borrow_date, return_date)
+                })));
+                return publicationsWithUsers;
             } catch (e) {
                 console.log(e);
                 throwCreator.createThrow(e);
@@ -57,7 +65,11 @@ module.exports = (context) => {
 
             try {
                 const publications = await db.Loan.getPublicationsOnLoanByDates(borrow_date, return_date);
-                return publications;
+                const publicationsWithUsers = await Promise.all(await publications.map(async x => ({
+                    ...x,
+                    loaned_to: await db.Loan.getUsersOnLoanByDatesAndPublicationId(x._id, borrow_date, return_date)
+                })));
+                return publicationsWithUsers;
             } catch (e) {
                 console.log(e);
                 throwCreator.createThrow(e);

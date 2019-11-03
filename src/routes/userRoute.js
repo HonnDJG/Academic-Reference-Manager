@@ -4,7 +4,7 @@ module.exports = (context) => {
     const userService = context('userService')(context);
     const publicationService = context('publicationService')(context);
     const reviewService = context('reviewService')(context);
-
+    const recommendationService = context('recommendationService')(context);
 
     // users information
     router.get("/", async (req, res) => {
@@ -154,9 +154,15 @@ module.exports = (context) => {
         res.send("Update publication review");
     })
 
-    router.get("/:u_id/recommendation", (req, res) => {
-        // TODO: Get a recommendation for a given user
-        res.send("Get a recommendation for a given user");
+    router.get("/:u_id/recommendation", async (req, res) => {
+        const { u_id } = req.params;
+        try {
+            const recommendations = await recommendationService.getRecommendationByUserId(u_id);
+            res.send(recommendations);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
 

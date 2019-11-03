@@ -19,9 +19,18 @@ module.exports = (context) => {
             const { loanDate, loanDuration } = query;
             try {
                 const borrow_date = moment(loanDate).subtract(loanDuration, 'days').toDate();
+
                 const users = await db.Loan.getUsersOnLoanByDates(borrow_date, loanDate);
-                return users;
+                const usersWithLoan = await Promise.all(users.map(async x => {
+                    return {
+                        ...x,
+                        publications_on_loan: await db.Loan.getPublicationsOnLoanByDatesAndUserId(x._id, borrow_date, loanDate)
+                    }
+                }));
+
+                return usersWithLoan;
             } catch (e) {
+                console.log(e);
                 throwCreator.createThrow(e);
             }
         },
@@ -30,9 +39,15 @@ module.exports = (context) => {
             const { loanDate } = query
             try {
                 const users = await db.Loan.getUsersOnLoanByDates(loanDate, loanDate);
-                return users;
+                const usersWithLoan = await Promise.all(users.map(async x => {
+                    return {
+                        ...x,
+                        publications_on_loan: await db.Loan.getPublicationsOnLoanByDatesAndUserId(x._id, loanDate, loanDate)
+                    }
+                }));
+
+                return usersWithLoan;
             } catch (e) {
-                console.log(e);
                 throwCreator.createThrow(e);
             }
         },
@@ -44,7 +59,14 @@ module.exports = (context) => {
 
             try {
                 const users = await db.Loan.getUsersOnLoanByDates(borrow_date, return_date);
-                return users;
+                const usersWithLoan = await Promise.all(users.map(async x => {
+                    return {
+                        ...x,
+                        publications_on_loan: await db.Loan.getPublicationsOnLoanByDatesAndUserId(x._id, borrow_date, return_date)
+                    }
+                }));
+
+                return usersWithLoan;
             } catch (e) {
                 console.log(e);
                 throwCreator.createThrow(e);
