@@ -8,7 +8,6 @@ module.exports = (context) => {
     
 
     /// GET
-    /// þarf að gera seperate authentication fyrir queries
     router.get("/", async (req, res) => {
         const { query } = req;
         const { loanDate, loanDuration } = query;
@@ -16,15 +15,12 @@ module.exports = (context) => {
         try {
             let publications;
             if (loanDate && loanDuration) {
-                /// 
-                queryPermit(userType, "auth", "admin");
+                queryPermit(userType, "admin");
                 publications = await publicationService.getPublicationsOnLoanByDateAndDuration(query);
             } else if (loanDate) {
-                /// auth
                 queryPermit(userType, "auth", "admin");
                 publications = await publicationService.getPublicationsOnLoanByDate(query);
             } else if (loanDuration) {
-                /// admin?
                 queryPermit(userType, "admin");
                 publications = await publicationService.getPublicationsOnLoanByDuration(query);
             } else {
