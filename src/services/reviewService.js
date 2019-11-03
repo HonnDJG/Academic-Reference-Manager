@@ -54,28 +54,38 @@ module.exports = (context) => {
                 throwCreator.createThrow(e);
             }
         },
-        updateUserReview: async (p_id, u_id, review) => {
+
+        removeUserReview: async(p_id, u_id) => {
             try {
                 await db.Publication.checkExistence(p_id);
                 await db.User.checkExistence(u_id);
-                await db.Review.checkExistence(review._id);
-                const result = await db.Publication.updateUserReview(p_id, u_id, review);
-                return result;
+                
+                const existingReview = await db.Review.getReviewByPublicationAndUserId(p_id, u_id);
+                if (!existingReview) { throw boom.conflict("User has not reviewed this publication!"); }
+                
+                await db.Review.removeUserReview(p_id, u_id);
+
+                return "Review removed successfully";
+
             } catch (e) {
                 throwCreator.createThrow(e);
             }
-
         },
-        removeUserReview: async (p_id, u_id) => {
+
+        updateUserReview: async (p_id, u_id, body) => {
             try {
                 await db.Publication.checkExistence(p_id);
                 await db.User.checkExistence(u_id);
 
-                const result = await db.Publication.removeUserReview(p_id, u_id);
+                const existingReview = await db.Review.getReviewByPublicationAndUserId(p_id, u_id);
+                if (!existingReview) { throw boom.conflict("User has not reviewed this publication!"); }
+
+                const result = await db.Review.updateUserReview(p_id, u_id, body);
                 return result;
             } catch (e) {
                 throwCreator.createThrow(e);
             }
+
         },
         getReviewsByUserId: async (u_id) => {
             try {
