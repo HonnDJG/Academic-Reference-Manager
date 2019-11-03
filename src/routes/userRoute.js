@@ -154,9 +154,26 @@ module.exports = (context) => {
         }
     });
 
-    router.put("/:u_id/reviews/:p_id", (req, res) => {
-        // TODO: Update publication review
-        res.send("Update publication review");
+    router.delete("/:u_id/reviews/:p_id", async (req, res) => {
+        const { u_id, p_id } = req.params;
+        try {
+            const result = await reviewService.removeUserReview(p_id, u_id);
+            res.send(result);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
+    });
+
+    router.put("/:u_id/reviews/:p_id", async (req, res) => {
+        const { u_id, p_id } = req.params;
+        try {
+            const result = await reviewService.updateUserReview(p_id, u_id, req.body);
+            res.send(result);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     })
 
     router.get("/:u_id/recommendation", (req, res) => {
