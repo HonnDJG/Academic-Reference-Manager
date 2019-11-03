@@ -32,10 +32,17 @@ module.exports = {
     },
 
     updateUserReview: function (p_id, u_id, review) {
-        return this.findOneAndUpdate();
+        return this.findOneAndUpdate(
+            { user: u_id, publication: p_id},
+            { $set: review},
+            { new: true, runValidators: true }
+        );
     },
 
-    removeUserReview: function (p_id, u_id, review) {
-        return this.findOneAndUpdate();
+    removeUserReview: function (p_id, u_id) {
+        return this.findOneAndDelete({
+            user: u_id,
+            publication: p_id
+        });
     }
 }
