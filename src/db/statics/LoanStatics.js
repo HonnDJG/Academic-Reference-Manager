@@ -4,7 +4,7 @@ const boom = require('@hapi/boom');
 module.exports = {
     checkExistence: async function (l_id) {
         const found = await this.findById(l_id);
-        if (!found) throw boom.notFound(`Loan of ID: ${l_id} does not exist`);
+        if (!found) throw boom.notFound(`Loan of ID: ${l_id} does not exist or has been removed`);
     },
     getLoansByUserId: function (u_id) {
         return this.find({ user: u_id });
@@ -73,11 +73,11 @@ module.exports = {
         ]);
     },
 
-    createLoan: function(loanObject) {
+    createLoan: function (loanObject) {
         return this.create(loanObject);
     },
 
-    updateLoan: function(loanObject) {
+    updateLoan: function (loanObject) {
         return this.findOneAndUpdate(
             {
                 user: loanObject.user,
@@ -88,7 +88,7 @@ module.exports = {
         );
     },
 
-    returnLoan: function(uid, pid, date) {
+    returnLoan: function (uid, pid, date) {
         return this.findOneAndUpdate(
             {
                 user: uid,

@@ -78,7 +78,7 @@ module.exports = (context) => {
 
 
     // publications related information
-    router.get("/:u_id/publications", permit("admin"), async (req, res) => {
+    router.get("/:u_id/publications", permit("auth", "admin"), async (req, res) => {
         const { u_id } = req.params;
         try {
             const publications = await publicationService.getPublicationsOnLoanByUserId(u_id);
@@ -89,7 +89,7 @@ module.exports = (context) => {
         }
     });
 
-    router.post("/:u_id/publications/:p_id", permit( "auth", "admin"),async (req, res) => {
+    router.post("/:u_id/publications/:p_id", permit("auth", "admin"), async (req, res) => {
         try {
             const loan = await publicationService.loanPublication(req.params.u_id, req.params.p_id, req.body);
             res.send(loan)
@@ -99,7 +99,7 @@ module.exports = (context) => {
         }
     });
 
-    router.delete("/:u_id/publications/:p_id", permit( "auth", "admin"), async (req, res) => {
+    router.delete("/:u_id/publications/:p_id", permit("auth", "admin"), async (req, res) => {
         try {
             const loan = await publicationService.returnPublication(req.params.u_id, req.params.p_id);
             res.send(loan)
@@ -124,7 +124,7 @@ module.exports = (context) => {
 
     // Reviews related information
     // auth admin
-    router.get("/:u_id/reviews", permit( "auth", "admin"), async (req, res) => {
+    router.get("/:u_id/reviews", permit("auth", "admin"), async (req, res) => {
         try {
             const reviews = await reviewService.getReviewsByUserId(req.params.u_id);
             res.send(reviews);
@@ -135,7 +135,7 @@ module.exports = (context) => {
     });
 
     //
-    router.get("/:u_id/reviews/:p_id",  permit( "auth", "admin"), async (req, res) => {
+    router.get("/:u_id/reviews/:p_id", permit("auth", "admin"), async (req, res) => {
         const { u_id, p_id } = req.params;
         try {
             const reviews = await reviewService.getReviewsByPublicationAndUserId(p_id, u_id);
@@ -146,7 +146,7 @@ module.exports = (context) => {
         }
     });
 
-    router.post("/:u_id/reviews/:p_id", permit( "auth", "admin"), async (req, res) => {
+    router.post("/:u_id/reviews/:p_id", permit("auth", "admin"), async (req, res) => {
         const { u_id, p_id } = req.params;
         try {
             const result = await reviewService.createUserReview(p_id, u_id, req.body);
@@ -157,7 +157,7 @@ module.exports = (context) => {
         }
     });
 
-    router.delete("/:u_id/reviews/:p_id",  permit( "admin"), async (req, res) => {
+    router.delete("/:u_id/reviews/:p_id", permit("admin"), async (req, res) => {
         const { u_id, p_id } = req.params;
         try {
             const result = await reviewService.removeUserReview(p_id, u_id);
@@ -168,7 +168,7 @@ module.exports = (context) => {
         }
     });
 
-    router.put("/:u_id/reviews/:p_id", permit( "auth", "admin"), async (req, res) => {
+    router.put("/:u_id/reviews/:p_id", permit("auth", "admin"), async (req, res) => {
         const { u_id, p_id } = req.params;
         try {
             const result = await reviewService.updateUserReview(p_id, u_id, req.body);
@@ -179,7 +179,7 @@ module.exports = (context) => {
         }
     })
 
-    router.get("/:u_id/recommendation", permit( "auth", "admin"), async (req, res) => {
+    router.get("/:u_id/recommendation", permit("auth", "admin"), async (req, res) => {
         const { u_id } = req.params;
         try {
             const recommendations = await recommendationService.getRecommendationByUserId(u_id);

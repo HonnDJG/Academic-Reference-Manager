@@ -14,15 +14,18 @@ module.exports = (context) => {
             }
 
         },
-        getPublicationsOnLoanByDate: async (query) => {
+        getPublicationsOnLoanByDate: async (userType, query) => {
             const { loanDate } = query
             try {
                 const publications = await db.Loan.getPublicationsOnLoanByDates(loanDate, loanDate);
-                const publicationsWithUsers = await Promise.all(await publications.map(async x => ({
-                    ...x,
-                    loaned_to: await db.Loan.getUsersOnLoanByDatesAndPublicationId(x._id, loanDate, loanDate)
-                })));
-                return publicationsWithUsers;
+                if (userType == "admin") {
+                    const publicationsWithUsers = await Promise.all(await publications.map(async x => ({
+                        ...x,
+                        loaned_to: await db.Loan.getUsersOnLoanByDatesAndPublicationId(x._id, loanDate, loanDate)
+                    })));
+                    return publicationsWithUsers;
+                }
+                return publications;
             } catch (e) {
                 console.log(e);
                 throwCreator.createThrow(e);
@@ -30,7 +33,6 @@ module.exports = (context) => {
         },
         getPublicationsOnLoanByUserId: async (u_id) => {
             const today = moment().startOf('day').toDate();
-
             try {
                 await db.User.checkExistence(u_id);
                 const publications = await db.Loan.getPublicationsOnLoanByDatesAndUserId(u_id, today, today);
@@ -129,18 +131,18 @@ module.exports = (context) => {
                 if (body.borrow_date && body.return_date) {
                     const borrow_date = moment(body.borrow_date, "YYYY-MM-DD", true);
                     const return_date = moment(body.return_date, "YYYY-MM-DD", true);
-        
+
                     if (!borrow_date.isValid() || !return_date.isValid()) {
                         throw boom.preconditionFailed('Invalid Date Input');
                     };
-                
+
                     const existingLoan = await db.Loan.getLoanByPublicationAndUserId(pid, uid);
                     if (existingLoan) { throw boom.conflict("User has already taken this publication out for loan!"); }
-                    
+
                     const publicationOnLoan = await db.Loan.getIfPublicationOnLoanByDates(pid, body.borrow_date, body.return_date)
                     if (publicationOnLoan.length != 0) { throw boom.conflict("This publication is already being loaned to someone!"); }
-                    
-                    const loanBody = { user: uid, publication: pid, borrow_date: borrow_date.toDate(), return_date : return_date.toDate() }
+
+                    const loanBody = { user: uid, publication: pid, borrow_date: borrow_date.toDate(), return_date: return_date.toDate() }
                     const loan = await db.Loan.createLoan(loanBody);
                     return loan;
                 }
@@ -168,11 +170,11 @@ module.exports = (context) => {
                     const existingLoan = await db.Loan.getLoanByPublicationAndUserId(pid, uid);
                     if (!existingLoan) { throw boom.conflict("User has not taken this publication out for loan!"); }
 
-                    const loanBody = { user: uid, publication: pid, borrow_date: borrow_date.toDate(), return_date : return_date.toDate() }
+                    const loanBody = { user: uid, publication: pid, borrow_date: borrow_date.toDate(), return_date: return_date.toDate() }
                     const loan = await db.Loan.updateLoan(loanBody);
                     return loan;
                 }
-                
+
             } catch (e) {
                 console.log(e);
                 throwCreator.createThrow(e);
@@ -183,7 +185,7 @@ module.exports = (context) => {
             try {
                 await db.User.checkExistence(uid);
                 await db.Publication.checkExistence(pid);
-                
+
                 const loan = await db.Loan.getLoanByPublicationAndUserId(pid, uid);
                 const today = moment().startOf('day').toDate();
 

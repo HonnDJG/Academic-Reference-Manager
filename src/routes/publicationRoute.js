@@ -5,7 +5,7 @@ module.exports = (context) => {
     const reviewService = context('reviewService')(context);
     const permit = context('permission');
     const queryPermit = context('queryPermission');
-    
+
 
     /// GET
     router.get("/", async (req, res) => {
@@ -19,7 +19,7 @@ module.exports = (context) => {
                 publications = await publicationService.getPublicationsOnLoanByDateAndDuration(query);
             } else if (loanDate) {
                 queryPermit(userType, "auth", "admin");
-                publications = await publicationService.getPublicationsOnLoanByDate(query);
+                publications = await publicationService.getPublicationsOnLoanByDate(userType, query);
             } else if (loanDuration) {
                 queryPermit(userType, "admin");
                 publications = await publicationService.getPublicationsOnLoanByDuration(query);

@@ -3,7 +3,7 @@ const boom = require('@hapi/boom');
 module.exports = {
     checkExistence: async function (p_id) {
         const found = await this.findById(p_id);
-        if (!found) throw boom.notFound(`Publication of ID: ${p_id} does not exist`);
+        if (!found) throw boom.notFound(`Publication of ID: ${p_id} does not exist or has been removed`);
     },
 
     getAllPublications: function () {
