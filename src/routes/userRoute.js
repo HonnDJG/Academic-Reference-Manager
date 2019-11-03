@@ -98,9 +98,14 @@ module.exports = (context) => {
         }
     });
 
-    router.delete("/:u_id/publications/:publication:id", (req, res) => {
-        // TODO: Return a publication
-        res.send("Return a publication");
+    router.delete("/:u_id/publications/:p_id", async (req, res) => {
+        try {
+            const loan = await publicationService.returnPublication(req.params.u_id, req.params.p_id);
+            res.send(loan)
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
     router.put("/:u_id/publications/:p_id", async (req, res) => {

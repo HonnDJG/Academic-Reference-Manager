@@ -14,7 +14,7 @@ const LoanSchema = mongoose.Schema(
 );
 
 function dateValidator(value) {
-    return this.startDate <= value;
+    return this.borrow_date <= value;
 }
 
 LoanSchema.statics = loanStatics;
