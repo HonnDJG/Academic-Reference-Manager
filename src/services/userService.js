@@ -85,7 +85,7 @@ module.exports = (context) => {
         getUserById: async (id) => {
             try {
                 const user = await db.User.getUserWithId(id);
-                if (!user) { throw boom.notFound(`User of ID: ${id} was not found`) }
+                if (!user) { throw boom.notFound(`User of ID: ${id} was not found or has been deleted`) }
 
                 const loansByUser = await db.Loan.getLoansByUserId(id);
 
@@ -101,7 +101,7 @@ module.exports = (context) => {
         deleteUser: async (id) => {
             try {
                 const deleted = await db.User.deleteUser(id);
-                if (!deleted) { throw boom.notFound(`User of ID: ${id} was not found`) }
+                if (!deleted) { throw boom.notFound(`User of ID: ${id} was not found or has been deleted`) }
                 return "User removed successfully";
             } catch (e) {
                 throwCreator.createThrow(e);
@@ -111,7 +111,7 @@ module.exports = (context) => {
         updateUser: async (id, body) => {
             try {
                 const user = await db.User.updateUser(id, body);
-                if (!user) { throw boom.notFound(`User of ID: ${id} was not found`) }
+                if (!user) { throw boom.notFound(`User of ID: ${id} was not found or has been deleted`) }
                 return user;
             } catch (e) {
                 throwCreator.createThrow(e);

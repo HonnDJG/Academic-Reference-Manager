@@ -87,7 +87,7 @@ module.exports = (context) => {
         getPublicationById: async (id) => {
             try {
                 const publication = await db.Publication.getPublicationById(id);
-                if (!publication) { throw boom.notFound(`Publication of ID: ${id} was not found`) }
+                if (!publication) { throw boom.notFound(`Publication of ID: ${id} was not found or has been deleted`) }
                 const borrow_history = await db.Loan.getLoansByPublicationId(id);
                 const retVal = { ...publication.toObject(), borrow_history }
                 return retVal;
