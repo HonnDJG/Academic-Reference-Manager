@@ -5,6 +5,7 @@ module.exports = (context) => {
     app.use(express.json());
 
     const boom = context('boom');
+    const moment = context('moment');
 
     const publicationRoute = context("publicationRoute")(context);
     const userRoute = context("userRoute")(context);
@@ -12,18 +13,29 @@ module.exports = (context) => {
     app.use((req, res, next) => {
         req.query = new Proxy(req.query, {
             get: (target, name) => target[Object.keys(target)
-                .find(key => key.toLowerCase() === name.toLowerCase())]
-        })
+                .find(key => key.toLowerCase() === name.toLowerCase())],
+        });
 
-        if (req.query.loanDate) {
-            req.query.loanDate = new Date(req.query.loanDate);
+        let { loanDate, loanDuration } = req.query;
 
-            if (req.query.loanDate == "Invalid Date") {
-                const message = boom.badRequest('Invalid Date Input').output.payload;
+        if (loanDate) {
+            const parsedDate = moment(loanDate, "YYYY-MM-DD", true);
+
+            if (!parsedDate.isValid()) {
+                const message = boom.badRequest('Invalid Date Query').output.payload;
                 return res.status(message.statusCode).send(message)
             };
 
-            req.query.loanDate.setHours(0, 0, 0, 0);
+            Object.keys(req.query).forEach(key => {
+                if (key.toLowerCase() == 'loandate') {
+                    req.query[key] = parsedDate.toDate();
+                }
+            });
+        }
+
+        if (loanDuration && isNaN(loanDuration)) {
+            const message = boom.badRequest('Invalid Duration Query').output.payload;
+            return res.status(message.statusCode).send(message)
         }
 
         next();

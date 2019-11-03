@@ -1,172 +1,98 @@
+
 module.exports = (context) => {
-    const db = context('db')(context);
-    const boom = context('boom');
-    const overlapChecker = context('overlapChecker');
-    const dateMakers = context('dateMakers')();
+    const db = context('db')(context),
+        boom = context('boom'),
+        throwCreator = context('throwCreator')(context),
+        moment = context('moment');
 
     return {
         getAllUsers: async () => {
             try {
-                const users = await db.User.getAllUsers().select('-publications');
+                const users = await db.User.getAllUsers();
                 return users;
             } catch (e) {
-                throw boom.badImplementation();
+                throwCreator.createThrow(e);
             }
         },
 
         getUsersByDateAndDuration: async (query) => {
             const { loanDate, loanDuration } = query;
             try {
-                const borrow_date = dateMakers.subtractDuration(loanDate, loanDuration);
-                const users = await db.User.getAllUsersWithLoansLongerThanDurationOnDate(borrow_date, loanDate);
+                const borrow_date = moment(loanDate).subtract(loanDuration, 'days').toDate();
+                const users = await db.Loan.getUsersOnLoanByDates(borrow_date, loanDate);
                 return users;
             } catch (e) {
-                throw boom.badImplementation();
+                throwCreator.createThrow(e);
             }
         },
 
-        getUsersByDate: async (query) => {
+        getUsersOnLoanByDate: async (query) => {
             const { loanDate } = query
             try {
-                const users = await db.User.getAllUsersWithOnGoingLoanOnDate(loanDate);
+                const users = await db.Loan.getUsersOnLoanByDates(loanDate, loanDate);
                 return users;
             } catch (e) {
-                throw boom.badImplementation();
+                console.log(e);
+                throwCreator.createThrow(e);
             }
         },
 
         getUsersByDuration: async (query) => {
             const { loanDuration } = query
-            const today = new Date();
-            const borrow_date = dateMakers.subtractDuration(today, loanDuration);
-            const return_date = new Date(today);
-            return_date.setHours(0, 0, 0, 0);
+            const borrow_date = moment().startOf('day').subtract(loanDuration, 'days').toDate();
+            const return_date = moment().startOf('day').toDate();
 
             try {
-                const users = await db.User.getAllUsersWithLoansLongerThanDurationOnDate(borrow_date, return_date);
+                const users = await db.Loan.getUsersOnLoanByDates(borrow_date, return_date);
                 return users;
             } catch (e) {
-                throw boom.badImplementation();
+                console.log(e);
+                throwCreator.createThrow(e);
             }
         },
 
         createUser: async (user) => {
-            try{
+            try {
                 const result = await db.User.createUser(user);
                 return result;
-            }catch(e){
-                throw boom.badImplementation();
+            } catch (e) {
+                throwCreator.createThrow(e);
             }
         },
 
         getUserById: async (id) => {
             try {
                 const user = await db.User.getUserWithId(id);
-                return user;
+                if (!user) { throw boom.notFound(`User of ID: ${id} was not found`) }
+
+                const loansByUser = await db.Loan.getLoansByUserId(id);
+
+                const retVal = { ...user.toObject(), borrow_history: loansByUser }
+
+                return retVal;
+
             } catch (e) {
-                throw boom.badImplementation();
+                throwCreator.createThrow(e);
             }
         },
 
         deleteUser: async (id) => {
             try {
-                await db.User.deleteUser(id);
+                const deleted = await db.User.deleteUser(id);
+                if (!deleted) { throw boom.notFound(`User of ID: ${id} was not found`) }
                 return "User removed successfully";
             } catch (e) {
-                throw boom.badImplementation();
+                throwCreator.createThrow(e);
             }
         },
 
         updateUser: async (id, body) => {
             try {
                 const user = await db.User.updateUser(id, body);
+                if (!user) { throw boom.notFound(`User of ID: ${id} was not found`) }
                 return user;
             } catch (e) {
-                throw boom.badImplementation();
-            }
-        },
-
-        getPublicationByUserId: async (id) => {
-            try {
-                const user = await db.User.getPublicationByUserId(id).populate("publications.publication");
-                return user.publications;
-            } catch (e) {
-                throw boom.badImplementation();
-            }
-        },
-
-        loanPublication: async (uid, pid, body) => {
-            try {
-                const bbd = overlapChecker.createDate(body.borrow_date);
-                let brd = overlapChecker.createDate(body.return_date);
-                if (body.return_date == null) {
-                    brd = null;
-                }
-                const users = await db.User.getUserswithPublication(pid);
-                let noOverlap = true
-                users.forEach(u => {
-                    u.publications.forEach(p => {
-                        const ubd = p.borrow_date;
-                        const urd = p.return_date;
-                        if (p.publication == pid){
-                            if (!overlapChecker.checkOverlap(bbd, brd, ubd, urd)) {
-                                noOverlap = false;
-                            }
-                        }
-                    })
-                })
-                if (noOverlap) {
-                    loan = {
-                        "publication": pid, 
-                        "borrow_date": bbd,
-                        "return_date": brd
-                    };
-                    returnLoan = await db.User.loanPublication(loan, uid);
-                    return returnLoan;
-                }
-                return "This publication can't be loaned at these dates";
-            } catch (e) {
-                throw boom.badImplementation();
-            }
-        },
-
-        updateLoan: async (uid, pid, body) => {
-            try {
-                const bbd = overlapChecker.createDate(body.borrow_date);
-                let brd = overlapChecker.createDate(body.return_date);
-                if (body.return_date == null) {
-                    brd = null;
-                }
-                const users = await db.User.getUserswithPublication(pid);
-                let noOverlap = true
-                users.forEach(u => {
-                    u.publications.forEach(p => {
-                        const ubd = p.borrow_date;
-                        const urd = p.return_date;
-                        const p_id = p._id;
-                        if (p.publication == pid && p_id != body._id){
-                            if (!overlapChecker.checkOverlap(bbd, brd, ubd, urd)) {
-                                console.log(p_id);
-                                console.log(body._id);
-                                noOverlap = false;
-                            }
-                        }
-                    })
-                })
-                if (noOverlap) {
-                    loan = {
-                        "_id": body._id,
-                        "publication": pid, 
-                        "borrow_date": bbd,
-                        "return_date": brd
-                    };
-                    returnLoan = await db.User.updateLoan(loan, uid, body._id);
-                    return returnLoan;
-                }
-                return "This publication can't be loaned at these dates";
-            } catch (e) {
-                console.log(e);
-                throw boom.badImplementation();
+                throwCreator.createThrow(e);
             }
         },
     }

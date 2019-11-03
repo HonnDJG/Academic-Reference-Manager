@@ -1,0 +1,16 @@
+[
+    {"publication": 1, "user": 1, "rating": 1},
+    {"publication": 3, "user": 1, "rating": 2},
+    {"publication": 8, "user": 1, "rating": 3},
+    {"publication": 1, "user": 4, "rating": 4},
+    {"publication": 13, "user": 12, "rating": 5},
+    {"publication": 1, "user": 1, "rating": 4},
+    {"publication": 155, "user": 1, "rating": 3},
+    {"publication": 1, "user": 1, "rating": 2},
+    {"publication": 321, "user": 1, "rating": 1},
+    {"publication": 321, "user": 12, "rating": 2},
+    {"publication": 221, "user": 17, "rating": 3},
+    {"publication": 331, "user": 11, "rating": 4},
+    {"publication": 133, "user": 13, "rating": 5},
+    {"publication": 311, "user": 19, "rating": 1}
+]

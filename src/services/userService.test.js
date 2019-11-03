@@ -22,7 +22,8 @@ const resetDeps = () => dependencies = {
     },
     dateMakers: () => ({
         subtractDuration: jest.fn((x, y) => new Date(2015 - 10 - 10))
-    })
+    }),
+    throwCreator: (context) => () => { throw new Error() }
 }
 
 resetDeps();

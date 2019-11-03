@@ -1,5 +1,7 @@
 const userSchema = require('./schemas/User');
 const publicationSchema = require('./schemas/Publication');
+const loanSchema = require('./schemas/Loan');
+const reviewSchema = require('./schemas/Review');
 
 module.exports = (context) => {
     const configFactory = context('config');
@@ -19,5 +21,7 @@ module.exports = (context) => {
         connection: connection,
         User: connection.model('User', userSchema),
         Publication: connection.model('Publication', publicationSchema),
+        Loan: connection.model('Loan', loanSchema),
+        Review: connection.model('Review', reviewSchema)
     };
 }

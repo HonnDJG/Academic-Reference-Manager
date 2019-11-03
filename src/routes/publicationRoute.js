@@ -2,109 +2,136 @@ module.exports = (context) => {
     const express = context("express");
     const router = express.Router();
     const publicationService = context('publicationService')(context);
+    const reviewService = context('reviewService')(context);
     const permit = context('permission');
 
     /// GET
-    router.get("/", (req, res) => {
-        // TODO: Get information about all Publications
-        publicationService.getAllPublications(
-            (result) => res.send(result),
-            (status, error) => res.status(status).send(error)
-        );
+    router.get("/", async (req, res) => {
+        const { query } = req;
+        const { loanDate, loanDuration } = query;
+        try {
+            let publications;
+            if (loanDate && loanDuration) {
+                publications = await publicationService.getPublicationsOnLoanByDateAndDuration(query);
+            } else if (loanDate) {
+                publications = await publicationService.getPublicationsOnLoanByDate(query);
+            } else if (loanDuration) {
+                publications = await publicationService.getPublicationsOnLoanByDuration(query);
+            } else {
+                publications = await publicationService.getAllPublications(query);
+            }
+            res.send(publications);
+        } catch (e) {
+            console.log(e);
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
-    router.get("/reviews", (req, res) => {
-        // TODO: Get reviews for all Publications
-        publicationService.getAllReviews(
-            (result) => res.send(result),
-            (status, error) => res.status(status).send(error)
-        );
+    router.get("/reviews", async (req, res) => {
+        try {
+            const reviews = await reviewService.getAllReviews();
+            res.send(reviews);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
-    router.get("/:publication_id/reviews", (req, res) => {
-        // TODO: Get all reviews for a given publication
-        publicationService.getReviewsByPublicationId(
-            req.params.publication_id,
-            (result) => res.send(result),
-            (status, error) => res.status(status).send(error)
-        );
+    router.get("/:p_id/reviews", async (req, res) => {
+        const { p_id } = req.params;
+        try {
+            const reviews = await reviewService.getReviewsByPublicationId(p_id);
+            res.send(reviews);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
-    router.get("/:publication_id", (req, res) => {
-        // TODO: Get information about a specific publication (including borrowing history)
-        publicationService.getPublicationById(
-            req.params.publication_id,
-            (result) => res.send(result),
-            (status, error) => res.status(status).send(error)
-        );
+    router.get("/:p_id", async (req, res) => {
+        const { p_id } = req.params;
+        try {
+            const reviews = await publicationService.getPublicationById(p_id);
+            res.send(reviews);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
-    router.get("/:publication_id/reviews/:user_id", (req, res) => {
-        // TODO: Get a user’s review for a publication
-        publicationService.getReviewByPublicationAndUserId(
-            req.params.publication_id,
-            req.params.user_id,
-            (result) => res.send(result),
-            (status, error) => res.status(status).send(error)
-        );
+    router.get("/:p_id/reviews/:u_id", async (req, res) => {
+        const { p_id, u_id } = req.params;
+        try {
+            const reviews = await reviewService.getReviewsByPublicationAndUserId(p_id, u_id);
+            res.send(reviews);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
     /// POST
 
-    router.post("/", (req, res) => {
-        // TODO: Add a publication
-        publicationService.createPublication(
-            req.body,
-            (result) => res.send(result),
-            (status, error) => res.status(status).send(error)
-        );
+    router.post("/", async (req, res) => {
+        try {
+            const result = await publicationService.createPublication(req.body);
+            res.send(result);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
     /// DELETE
 
-    router.delete("/:publication_id", (req, res) => {
-        publicationService.removePublicationById(
-            req.params.publication_id,
-            (result) => res.send(result),
-            (status, error) => res.status(status).send(error)
-        );
+    router.delete("/:p_id", async (req, res) => {
+        const { p_id } = req.params;
+        try {
+            const deleted = await publicationService.removePublicationById(p_id);
+            res.send("Successfully deleted!");
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
     /// UPDATE
 
-    router.put("/:publication_id", (req, res) => {
-        publicationService.updatePublicationById(
-            req.params.publication_id,
-            req.body,
-            (result) => res.send(result),
-            (status, error) => res.status(status).send(error)
-        );
+    router.put("/:p_id", async (req, res) => {
+        const { p_id } = req.params;
+        try {
+            const result = await publicationService.updatePublicationById(p_id, req.body);
+            res.send(result)
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
 
 
-
-
-    router.put("/:publication_id/reviews/:user_id", (req, res) => {
-        // TODO: Get a user’s review for a publication
-        const review = req.body;
-        publicationService.updateUserReview(
-            req.params.publication_id,
-            req.params.user_id,
-            review,
-            (result) => res.send(result),
-            (status, error) => res.status(status).send(error)
-        );
+    router.put("/:p_id/reviews/:u_id", async (req, res) => {
+        const { p_id, u_id } = req.params;
+        try {
+            const review = req.body;
+            const result = await reviewService.updateUserReview(p_id, u_id, review);
+            res.send(result);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
-    router.delete("/:publication_id/reviews/:user_id", (req, res) => {
-        // TODO: Get a user’s review for a publication
-        publicationService.removeUserReview(
-            req.params.publication_id,
-            req.params.user_id,
-            (result) => res.send(result),
-            (status, error) => res.status(status).send(error)
-        );
+    router.delete("/:p_id/reviews/:u_id", async (req, res) => {
+        const { p_id, u_id } = req.params;
+        try {
+            const deleted = await reviewService.removeUserReview(p_id, u_id);
+            res.send(deleted);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
 
