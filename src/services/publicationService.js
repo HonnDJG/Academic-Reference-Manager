@@ -2,7 +2,6 @@ module.exports = (context) => {
     const db = context('db')(context);
     const boom = context('boom');
     const throwCreator = context('throwCreator')(context);
-    const overlapChecker = context('overlapChecker');
     const moment = context('moment');
 
     return {
@@ -126,39 +125,24 @@ module.exports = (context) => {
             try {
                 await db.User.checkExistence(uid);
                 await db.Publication.checkExistence(pid);
-                if (!body.borrow_date) { throw boom.preconditionFailed("'borrow_date' must not be null") };
-                const bbd = overlapChecker.createDate(body.borrow_date);
-                const brd = body.return_date ? overlapChecker.createDate(body.return_date) : null;
-                // const users = await db.User.getUserswithPublication(pid);
-                // let noOverlap = true
-                // users.forEach(u => {
-                //     u.publications.forEach(p => {
-                //         const ubd = p.borrow_date;
-                //         const urd = p.return_date;
-                //         if (p.publication == pid) {
-                //             if (!overlapChecker.checkOverlap(bbd, brd, ubd, urd)) {
-                //                 noOverlap = false;
-                //             }
-                //         }
-                //     })
-                // })
-                // if (noOverlap) {
-                //     console.log("XD");
-                const loan = {
-                    "publication": pid,
-                    "borrow_date": bbd,
-                    "return_date": brd
-                };
-                //     const returnLoan = await db.User.loanPublication(loan, uid);
-                //     return returnLoan;
-                // }
-                // return "This publication can't be loaned at these dates";
-                const onLoan = await db.User.getOnGoingLoansOfPublicationByUserId(pid, bbd);
 
-                if (onLoan.length) {
-                    throw boom.conflict("This publication is already on loan at this date or already borrowed ahead of time for indefinite time");
-                } else {
-                    await db.User.loanPublicationForUser(uid, loan);
+                if (body.borrow_date && body.return_date) {
+                    const borrow_date = moment(body.borrow_date, "YYYY-MM-DD", true);
+                    const return_date = moment(body.return_date, "YYYY-MM-DD", true);
+        
+                    if (!borrow_date.isValid() || !return_date.isValid()) {
+                        throw boom.preconditionFailed('Invalid Date Input');
+                    };
+                
+                    const existingLoan = await db.Loan.getLoanByPublicationAndUserId(pid, uid);
+                    if (existingLoan) { throw boom.conflict("User has already taken this publication out for loan!"); }
+                    
+                    const publicationOnLoan = await db.Loan.getIfPublicationOnLoanByDates(pid, body.borrow_date, body.return_date)
+                    if (publicationOnLoan.length != 0) { throw boom.conflict("This publication is already being loaned to someone!"); }
+                    
+                    const loanBody = { user: uid, publication: pid, borrow_date: borrow_date.toDate(), return_date : return_date.toDate() }
+                    const loan = await db.Loan.createLoan(loanBody);
+                    return loan;
                 }
             } catch (e) {
                 console.log(e);
@@ -170,38 +154,48 @@ module.exports = (context) => {
             try {
                 await db.User.checkExistence(uid);
                 await db.Publication.checkExistence(pid);
-                const bbd = overlapChecker.createDate(body.borrow_date);
-                let brd = overlapChecker.createDate(body.return_date);
-                if (body.return_date == null) {
-                    brd = null;
-                }
-                const users = await db.User.getUserswithPublication(pid);
-                let noOverlap = true
-                users.forEach(u => {
-                    u.publications.forEach(p => {
-                        const ubd = p.borrow_date;
-                        const urd = p.return_date;
-                        const p_id = p._id;
-                        if (p.publication == pid && p_id != body._id) {
-                            if (!overlapChecker.checkOverlap(bbd, brd, ubd, urd)) {
-                                console.log(p_id);
-                                console.log(body._id);
-                                noOverlap = false;
-                            }
-                        }
-                    })
-                })
-                if (noOverlap) {
-                    const loan = {
-                        "_id": body._id,
-                        "publication": pid,
-                        "borrow_date": bbd
+
+                if (body.borrow_date && body.return_date) {
+                    const borrow_date = moment(body.borrow_date, "YYYY-MM-DD", true);
+                    const return_date = moment(body.return_date, "YYYY-MM-DD", true);
+
+                    if (!borrow_date.isValid() || !return_date.isValid()) {
+                        throw boom.preconditionFailed('Invalid Date Input');
                     };
-                    const returnLoan = await db.User.updateLoan(loan, uid, body._id);
-                    return returnLoan;
+
+                    if (!(borrow_date <= return_date)) { throw boom.preconditionFailed('`return_date` must be later than `borrow_date`'); }
+
+                    const existingLoan = await db.Loan.getLoanByPublicationAndUserId(pid, uid);
+                    if (!existingLoan) { throw boom.conflict("User has not taken this publication out for loan!"); }
+
+                    const loanBody = { user: uid, publication: pid, borrow_date: borrow_date.toDate(), return_date : return_date.toDate() }
+                    const loan = await db.Loan.updateLoan(loanBody);
+                    return loan;
                 }
-                return "This publication is already on loan on these days";
+                
             } catch (e) {
+                console.log(e);
+                throwCreator.createThrow(e);
+            }
+        },
+
+        returnPublication: async (uid, pid) => {
+            try {
+                await db.User.checkExistence(uid);
+                await db.Publication.checkExistence(pid);
+                
+                const loan = await db.Loan.getLoanByPublicationAndUserId(pid, uid);
+                const today = moment().startOf('day').toDate();
+
+                console.log(today < loan.borrow_date);
+                console.log(today);
+                console.log(loan);
+                if (today < loan.borrow_date) { throw boom.conflict("The user has not taken this book yet"); }
+
+                const result = await db.Loan.returnLoan(uid, pid, today);
+                return result;
+            } catch (e) {
+                console.log(e);
                 throwCreator.createThrow(e);
             }
         },

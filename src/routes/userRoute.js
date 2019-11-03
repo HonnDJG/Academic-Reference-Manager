@@ -5,6 +5,7 @@ module.exports = (context) => {
     const publicationService = context('publicationService')(context);
     const reviewService = context('reviewService')(context);
     const recommendationService = context('recommendationService')(context);
+    const permit = context('permission');
 
     // users information
     router.get("/", async (req, res) => {
@@ -28,7 +29,7 @@ module.exports = (context) => {
         }
     });
 
-    router.post("/", async (req, res) => {
+    router.post("/", permit("admin"), async (req, res) => {
         try {
             const user = await userService.createUser(req.body);
             res.send(user);
@@ -98,9 +99,14 @@ module.exports = (context) => {
         }
     });
 
-    router.delete("/:u_id/publications/:publication:id", (req, res) => {
-        // TODO: Return a publication
-        res.send("Return a publication");
+    router.delete("/:u_id/publications/:p_id", async (req, res) => {
+        try {
+            const loan = await publicationService.returnPublication(req.params.u_id, req.params.p_id);
+            res.send(loan)
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     });
 
     router.put("/:u_id/publications/:p_id", async (req, res) => {
@@ -149,9 +155,26 @@ module.exports = (context) => {
         }
     });
 
-    router.put("/:u_id/reviews/:p_id", (req, res) => {
-        // TODO: Update publication review
-        res.send("Update publication review");
+    router.delete("/:u_id/reviews/:p_id", async (req, res) => {
+        const { u_id, p_id } = req.params;
+        try {
+            const result = await reviewService.removeUserReview(p_id, u_id);
+            res.send(result);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
+    });
+
+    router.put("/:u_id/reviews/:p_id", async (req, res) => {
+        const { u_id, p_id } = req.params;
+        try {
+            const result = await reviewService.updateUserReview(p_id, u_id, req.body);
+            res.send(result);
+        } catch (e) {
+            const message = e.output.payload;
+            res.status(message.statusCode).send(message);
+        }
     })
 
     router.get("/:u_id/recommendation", async (req, res) => {

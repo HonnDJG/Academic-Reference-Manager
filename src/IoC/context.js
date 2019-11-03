@@ -14,12 +14,12 @@ module.exports = {
             userService: require('../services/userService'),
             mongoose: require('mongoose'),
             boom: require('@hapi/boom'),
-            overlapChecker: require('../services/helpers/overlapChecker'),
             permission: require('../utils/permission'),
             reviewService: require('../services/reviewService'),
             throwCreator: require('../services/helpers/throwCreator'),
             moment: require('moment'),
-            recommendationService: require('../services/recommendationService')
+            recommendationService: require('../services/recommendationService'),
+            queryPermission: require('../utils/queryPermission')
         });
     },
 };

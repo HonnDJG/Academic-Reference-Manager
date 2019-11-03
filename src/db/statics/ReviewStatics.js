@@ -31,12 +31,20 @@ module.exports = {
         return this.create(ratingObject);
     },
 
-    updateUserReview: function (p_id, u_id, review) {
-        return this.findOneAndUpdate();
+    updateUserReview: function (p_id, u_id, body) {
+        return this.findOneAndUpdate({
+            user: u_id,
+            publication: p_id
+        },
+            { $set: body },
+            { new: true, runValidators: true });
     },
 
-    removeUserReview: function (p_id, u_id, review) {
-        return this.findOneAndUpdate();
+    removeUserReview: function (p_id, u_id) {
+        return this.findOneAndDelete({
+            user: u_id,
+            publication: p_id
+        });
     },
 
     getRecommendationExcludingBorrowed: function (borrowed_p_id_list) {
