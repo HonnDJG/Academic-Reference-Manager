@@ -83,46 +83,47 @@ module.exports = {
         );
     },
 
-    getPublicationByUserId: function (id) {
-        return this.findOne(
-            { _id: id },
-            {
-                _id: 0,
-                publications: 1
-            })
-    },
+    // Held að við notum þetta ekkert, vill ekki eyða just in case
+    // getPublicationByUserId: function (id) {
+    //     return this.findOne(
+    //         { _id: id },
+    //         {
+    //             _id: 0,
+    //             publications: 1
+    //         })
+    // },
 
-    loanPublicationForUser: function (uid, loan) {
-        return this.findOneAndUpdate(
-            { _id: uid },
-            { $push: { publications: loan } },
-            { new: true, runValidators: true }
-        )
-    },
+    // loanPublicationForUser: function (uid, loan) {
+    //     return this.findOneAndUpdate(
+    //         { _id: uid },
+    //         { $push: { publications: loan } },
+    //         { new: true, runValidators: true }
+    //     )
+    // },
 
-    getUserswithPublication: function (pid) {
-        return this.find({
-            publications: {
-                $elemMatch: {
-                    publication: pid
-                }
-            }
+    // getUserswithPublication: function (pid) {
+    //     return this.find({
+    //         publications: {
+    //             $elemMatch: {
+    //                 publication: pid
+    //             }
+    //         }
 
-        });
-    },
+    //     });
+    // },
 
-    updateLoan: function (loan, uid, lid) {
-        return this.findOneAndUpdate(
-            {
-                _id: uid,
-                publications: {
-                    $elemMatch: {
-                        _id: lid,
-                    }
-                }
-            },
-            { $set: { "publications.$": loan } },
-            { new: true, runValidators: true }
-        )
-    }
+    // updateLoan: function (loan, uid, lid) {
+    //     return this.findOneAndUpdate(
+    //         {
+    //             _id: uid,
+    //             publications: {
+    //                 $elemMatch: {
+    //                     _id: lid,
+    //                 }
+    //             }
+    //         },
+    //         { $set: { "publications.$": loan } },
+    //         { new: true, runValidators: true }
+    //     )
+    // }
 }

@@ -28,5 +28,5 @@ module.exports = {
             { $set: body },
             { new: true, runValidators: true }
         );
-    }
+    },
 }

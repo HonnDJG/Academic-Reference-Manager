@@ -49,4 +49,41 @@ module.exports = {
             { $replaceRoot: { newRoot: "$user" } }
         ]);
     },
+
+    getIfPublicationOnLoanByDates: function (p_id, borrow_date, return_date) {
+        return this.aggregate([
+            { $match: { publication: p_id, borrow_date: { $lte: borrow_date }, $or: [{ return_date: { $gt: return_date } }, { return_date: null }] } },
+            { $group: { _id: null, publication: { $addToSet: "$publication" } } },
+            { $unwind: "$publication" },
+            { $lookup: { from: 'publications', localField: 'publication', foreignField: '_id', as: 'publication' } },
+            { $unwind: "$publication" },
+            { $replaceRoot: { newRoot: "$publication" } }
+        ]);
+    },
+
+    createLoan: function(loanObject) {
+        return this.create(loanObject);
+    },
+
+    updateLoan: function(loanObject) {
+        return this.findOneAndUpdate(
+            {
+                user: loanObject.user,
+                publication: loanObject.publication
+            },
+            { $set: loanObject },
+            { new: true }
+        );
+    },
+
+    returnLoan: function(uid, pid, date) {
+        return this.findOneAndUpdate(
+            {
+                user: uid,
+                publication: pid
+            },
+            { $set: { return_date: date } },
+            { new: true }
+        );
+    },
 }
