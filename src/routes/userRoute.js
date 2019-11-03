@@ -4,7 +4,7 @@ module.exports = (context) => {
     const userService = context('userService')(context);
     const publicationService = context('publicationService')(context);
     const reviewService = context('reviewService')(context);
-
+    const permit = context('permission');
 
     // users information
     router.get("/", async (req, res) => {
@@ -28,7 +28,7 @@ module.exports = (context) => {
         }
     });
 
-    router.post("/", async (req, res) => {
+    router.post("/", permit("admin"),  async (req, res) => {
         try {
             const user = await userService.createUser(req.body);
             res.send(user);

@@ -17,7 +17,8 @@ module.exports = {
             permission: require('../utils/permission'),
             reviewService: require('../services/reviewService'),
             throwCreator: require('../services/helpers/throwCreator'),
-            moment: require('moment')
+            moment: require('moment'),
+            queryPermission: require('../utils/queryPermission')
         });
     },
 };

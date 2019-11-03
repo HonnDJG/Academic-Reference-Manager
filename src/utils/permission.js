@@ -14,5 +14,4 @@ module.exports = (...allowed) => {
             res.status(msg.statusCode).send(msg);
         }
     }
-
 }
