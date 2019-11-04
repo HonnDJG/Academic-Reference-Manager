@@ -4,6 +4,7 @@ module.exports = (context) => {
     const throwCreator = context('throwCreator')(context);
 
     return {
+        // returns reccomendations for a given user.
         getRecommendationByUserId: async (u_id) => {
             try {
                 const userLoanedPublications = await db.Loan.getLoansByUserId(u_id).select('publication -_id');

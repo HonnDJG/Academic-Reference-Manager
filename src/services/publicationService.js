@@ -14,6 +14,7 @@ module.exports = (context) => {
             }
 
         },
+        // returns a report of publications on loan at a given date
         getPublicationsOnLoanByDate: async (userType, query) => {
             const { loanDate } = query
             try {
@@ -30,6 +31,7 @@ module.exports = (context) => {
                 throwCreator.createThrow(e);
             }
         },
+        // returns publications on loan by a single user.
         getPublicationsOnLoanByUserId: async (u_id) => {
             const today = moment().startOf('day').toDate();
             try {
@@ -40,6 +42,7 @@ module.exports = (context) => {
                 throwCreator.createThrow(e);
             }
         },
+        // returns a report of publications that have been on loan for some amount of time.
         getPublicationsOnLoanByDuration: async (query) => {
             const { loanDuration } = query
             const borrow_date = moment().startOf('day').subtract(loanDuration, 'days').toDate();
@@ -56,6 +59,7 @@ module.exports = (context) => {
                 throwCreator.createThrow(e);
             }
         },
+        // returns a report of publications that have been on loan for some amount of time at a given date.
         getPublicationsOnLoanByDateAndDuration: async (query) => {
             const { loanDuration, loanDate } = query
             const borrow_date = moment(loanDate).subtract(loanDuration, 'days').toDate();
@@ -119,6 +123,7 @@ module.exports = (context) => {
             }
         },
 
+        // loans a publication to a user
         loanPublication: async (uid, pid, body) => {
             try {
                 await db.User.checkExistence(uid);
@@ -175,6 +180,7 @@ module.exports = (context) => {
             }
         },
 
+        // return a publication that's been on loan.
         returnPublication: async (uid, pid) => {
             try {
                 await db.User.checkExistence(uid);

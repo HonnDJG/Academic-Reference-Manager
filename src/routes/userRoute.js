@@ -7,7 +7,12 @@ module.exports = (context) => {
     const recommendationService = context('recommendationService')(context);
     const permit = context('permission');
 
-    // users information
+
+    /// Users related information
+
+    // returns a list of all users if there are no
+    // query parameters, else it returns a report
+    // depending on which query parameters are set.
     router.get("/", permit("admin"), async (req, res) => {
         const { query } = req;
         const { loanDate, loanDuration } = query;
@@ -29,6 +34,8 @@ module.exports = (context) => {
         }
     });
 
+    // creates a new user.
+    // admin role required.
     router.post("/", permit("admin"), async (req, res) => {
         try {
             const user = await userService.createUser(req.body);
@@ -39,6 +46,8 @@ module.exports = (context) => {
         }
     });
 
+    // returns a user with id = u_id.
+    // admin role required
     router.get("/:u_id", permit("admin"), async (req, res) => {
         const { u_id } = req.params;
         try {
@@ -50,6 +59,8 @@ module.exports = (context) => {
         }
     });
 
+    // deletes a user with id = u_id.
+    // admin role required.
     router.delete("/:u_id", permit("admin"), async (req, res) => {
         const { u_id } = req.params;
         try {
@@ -61,6 +72,8 @@ module.exports = (context) => {
         }
     });
 
+    // updates a user with id = u_id.
+    // admin role required.
     router.put("/:u_id", permit("admin"), async (req, res) => {
         const { u_id } = req.params;
         try {
@@ -73,7 +86,10 @@ module.exports = (context) => {
     });
 
 
-    // publications related information
+    /// publications related information
+
+    // returns a list of publications on loan by user with id = u_id.
+    // auth or admin role required.
     router.get("/:u_id/publications", permit("auth", "admin"), async (req, res) => {
         const { u_id } = req.params;
         try {
@@ -85,6 +101,8 @@ module.exports = (context) => {
         }
     });
 
+    // loans a publication with id = p_id to user with id = u_id.
+    // auth or admin role required.
     router.post("/:u_id/publications/:p_id", permit("auth", "admin"), async (req, res) => {
         try {
             const loan = await publicationService.loanPublication(req.params.u_id, req.params.p_id, req.body);
@@ -95,6 +113,8 @@ module.exports = (context) => {
         }
     });
 
+    // returns a publication with id = p_id that was on loan to user with id = u_id.
+    // auth or admin role required.
     router.delete("/:u_id/publications/:p_id", permit("auth", "admin"), async (req, res) => {
         try {
             const loan = await publicationService.returnPublication(req.params.u_id, req.params.p_id);
@@ -105,6 +125,8 @@ module.exports = (context) => {
         }
     });
 
+    // updates loan information for loan of publication with id = p_id to user with id = u_id.
+    // admin role required.
     router.put("/:u_id/publications/:p_id", permit("admin"), async (req, res) => {
         try {
             const loan = await publicationService.updateLoan(req.params.u_id, req.params.p_id, req.body);
@@ -116,10 +138,10 @@ module.exports = (context) => {
     });
 
 
-
-
-    // Reviews related information
-    // auth admin
+    /// Reviews related information
+    
+    // returns user reviews by user with id = u_id.
+    // auth or admin role required.
     router.get("/:u_id/reviews", permit("auth", "admin"), async (req, res) => {
         try {
             const reviews = await reviewService.getReviewsByUserId(req.params.u_id);
@@ -130,7 +152,8 @@ module.exports = (context) => {
         }
     });
 
-    
+    // returns a review for publication with id = p_id by user with id = u_id.
+    // auth or admin role requied.
     router.get("/:u_id/reviews/:p_id", permit("auth", "admin"), async (req, res) => {
         const { u_id, p_id } = req.params;
         try {
@@ -142,6 +165,8 @@ module.exports = (context) => {
         }
     });
 
+    // creates new user review by user with id = u_id , for publication with id = p_id.
+    // auth or admin role required.
     router.post("/:u_id/reviews/:p_id", permit("auth", "admin"), async (req, res) => {
         const { u_id, p_id } = req.params;
         try {
@@ -153,6 +178,8 @@ module.exports = (context) => {
         }
     });
 
+    // removes user review by user with id = u_id for publication with id = p_id.
+    // auth or admin role required.
     router.delete("/:u_id/reviews/:p_id", permit("auth", "admin"), async (req, res) => {
         const { u_id, p_id } = req.params;
         try {
@@ -164,6 +191,8 @@ module.exports = (context) => {
         }
     });
 
+    // updates user review by user with id = u_id for publication with id = p_id.
+    // auth or admin role required.
     router.put("/:u_id/reviews/:p_id", permit("auth", "admin"), async (req, res) => {
         const { u_id, p_id } = req.params;
         try {
@@ -175,6 +204,9 @@ module.exports = (context) => {
         }
     })
 
+    // returns a list of reccomendations for user with id = u_id,
+    // sorted by rating from highest to lowest.
+    // auth or admin role required.
     router.get("/:u_id/recommendation", permit("auth", "admin"), async (req, res) => {
         const { u_id } = req.params;
         try {

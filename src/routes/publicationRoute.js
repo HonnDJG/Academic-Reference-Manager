@@ -8,6 +8,9 @@ module.exports = (context) => {
 
 
     /// GET
+
+    // returns all publications if no query parameters are set,
+    // else it returns a report depending on which parameters are set.
     router.get("/", async (req, res) => {
         const { query } = req;
         const { loanDate, loanDuration } = query;
@@ -33,6 +36,7 @@ module.exports = (context) => {
         }
     });
 
+    // returns all reviews
     router.get("/reviews", async (req, res) => {
         try {
             const reviews = await reviewService.getAllReviews();
@@ -43,6 +47,8 @@ module.exports = (context) => {
         }
     });
 
+    // returns all reviews for a single publication
+    // with id = p_id
     router.get("/:p_id/reviews", async (req, res) => {
         const { p_id } = req.params;
         try {
@@ -54,6 +60,7 @@ module.exports = (context) => {
         }
     });
 
+    // returns a single publication with id = p_id.
     router.get("/:p_id", async (req, res) => {
         const { p_id } = req.params;
         try {
@@ -65,6 +72,8 @@ module.exports = (context) => {
         }
     });
 
+    // returns a single review for publication with id = p_id,
+    // and by user with id = u_id.
     router.get("/:p_id/reviews/:u_id", async (req, res) => {
         const { p_id, u_id } = req.params;
         try {
@@ -77,8 +86,9 @@ module.exports = (context) => {
     });
 
     /// POST
-    /// authorize admin
 
+    // creates a new publication.
+    // admin role required.
     router.post("/", permit("admin"), async (req, res) => {
         try {
             const result = await publicationService.createPublication(req.body);
@@ -90,8 +100,9 @@ module.exports = (context) => {
     });
 
     /// DELETE
-    /// authorize admin
-
+    
+    // deletes a publication with id = p_id.
+    // admin role required.
     router.delete("/:p_id", permit("admin"), async (req, res) => {
         const { p_id } = req.params;
         try {
@@ -104,8 +115,9 @@ module.exports = (context) => {
     });
 
     /// UPDATE
-    /// authorize admin
 
+    // updates a publication with id = p_id.
+    // admin role required.
     router.put("/:p_id", permit("admin"), async (req, res) => {
         const { p_id } = req.params;
         try {
@@ -118,7 +130,9 @@ module.exports = (context) => {
     });
 
 
-    /// authorize user sem á review
+    // updates a user review with publication id = p_id
+    // and user id = u_id.
+    // admin role required.
     router.put("/:p_id/reviews/:u_id", permit("admin"), async (req, res) => {
         const { p_id, u_id } = req.params;
         try {
@@ -131,7 +145,9 @@ module.exports = (context) => {
         }
     });
 
-    /// user sem á review
+    // removes a user review with publication id = p_id
+    // and user id = u_id.
+    // admin role required.
     router.delete("/:p_id/reviews/:u_id", permit("admin"), async (req, res) => {
         const { p_id, u_id } = req.params;
         try {
