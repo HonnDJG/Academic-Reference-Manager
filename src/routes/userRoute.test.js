@@ -156,10 +156,10 @@ describe("Tests the success cases of the user routes", () => {
         done();
     })
 
-    it('should get review for given publication frm a user with a given ID has left', async done => {
+    it('should get review for given publication from a user with a given ID has left', async done => {
         const response = await request.get("/users/5dbf564e0ade253c5a4c7b60/reviews/5dbf564e0ade253c5a4c777a").set("Authorization", "admin")
         expect(response.status).toBe(200);
-        expect(response.body.length).toBe(1);
+        expect(response.body.rating).toBe(4);
         done();
     })
 

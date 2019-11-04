@@ -30,7 +30,6 @@ module.exports = (context) => {
                 const review = await db.Review.getReviewByPublicationAndUserId(p_id, u_id);
                 return review;
             } catch (e) {
-                console.log(e);
                 throwCreator.createThrow(e);
             }
 
