@@ -84,7 +84,7 @@ module.exports = (context) => {
 
         getUserById: async (id) => {
             try {
-                const user = await db.User.getUserWithId(id);
+                const user = await db.User.getUserById(id);
                 if (!user) { throw boom.notFound(`User of ID: ${id} was not found or has been deleted`) }
 
                 const loansByUser = await db.Loan.getLoansByUserId(id);

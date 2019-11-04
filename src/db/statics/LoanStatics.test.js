@@ -32,46 +32,18 @@ describe("Test User queries", () => {
             {
                 first_name: "user1",
                 email: "hello@123.com",
-                publications: [
-                    {
-                        publication: "5db9dc4791e9a35fc3ebb637",
-                        borrow_date: dates.octFirst,
-                        return_date: dates.octTwentieth
-                    }
-                ]
             },
             {
                 first_name: "user2",
                 email: "hello@123.com",
-                publications: [
-                    {
-                        publication: "5db9dc4791e9a35fc3ebb638",
-                        borrow_date: dates.octFirst,
-                        return_date: dates.octTenth
-                    }
-                ]
             },
             {
                 first_name: "user3",
                 email: "hello@123.com",
-                publications: [
-                    {
-                        publication: "5db9dc4791e9a35fc3ebb639",
-                        borrow_date: dates.octTenth,
-                        return_date: null
-                    }
-                ]
             },
             {
                 first_name: "user4",
                 email: "hello@123.com",
-                publications: [
-                    {
-                        publication: "5db9dc4791e9a35fc3ebb639",
-                        borrow_date: dates.octFifth,
-                        return_date: dates.novFirst
-                    }
-                ]
             }
         ]);
 

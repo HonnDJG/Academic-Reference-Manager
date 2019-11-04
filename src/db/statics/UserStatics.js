@@ -14,7 +14,7 @@ module.exports = {
         return this.create(user);
     },
 
-    getUserWithId: function (id) {
+    getUserById: function (id) {
         return this.findOne({
             _id: id
         });

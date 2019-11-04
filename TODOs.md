@@ -3,8 +3,6 @@
 
 ## Services
 
-### 
-- [ ] Don't preserve history on delete?
 - [ ] Check if results are as we want
 - [ ] Authorize routes
 
@@ -23,3 +21,7 @@
 - [ ] Get a recommendation for a give user
 - [ ] Update user's review
 - [ ] Remove a user's review
+
+## Statics
+
+###
