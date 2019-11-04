@@ -40,7 +40,7 @@ module.exports = (context) => {
                 await db.User.checkExistence(u_id);
 
                 const existingReview = await db.Review.getReviewByPublicationAndUserId(p_id, u_id);
-                if (existingReview) { throw boom.conflict("User has already reviewed this publication!"); }
+                if (!existingReview) { throw boom.conflict("User has already reviewed this publication!"); }
 
                 const hasBorrowed = await db.Loan.getLoanByPublicationAndUserId(p_id, u_id);
                 if (!hasBorrowed) { throw boom.badRequest("User must have borrowed this publication!"); }
@@ -55,14 +55,14 @@ module.exports = (context) => {
             }
         },
 
-        removeUserReview: async(p_id, u_id) => {
+        removeUserReview: async (p_id, u_id) => {
             try {
                 await db.Publication.checkExistence(p_id);
                 await db.User.checkExistence(u_id);
-                
+
                 const existingReview = await db.Review.getReviewByPublicationAndUserId(p_id, u_id);
                 if (!existingReview) { throw boom.conflict("User has not reviewed this publication!"); }
-                
+
                 await db.Review.removeUserReview(p_id, u_id);
 
                 return "Review removed successfully";
