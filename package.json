@@ -4,12 +4,12 @@
   "description": "An API project for the course Software Architecture and Implementation",
   "main": "src/app.js",
   "scripts": {
-    "test": "set NODE_ENV=test && jest --runInBand --detectOpenHandles",
-    "test:coverage": "set NODE_ENV=test && jest --runInBand --coverage --detectOpenHandles",
+    "test": "cross-env NODE_ENV=test && jest --runInBand --detectOpenHandles",
+    "test:coverage": "cross-env NODE_ENV=test && jest --runInBand --coverage --detectOpenHandles",
     "start": "nodemon src/app.js",
-    "production": "set NODE_ENV=production && node src/app.js",
-    "initDevData": "set NODE_ENV=development && node src/db/initFromData",
-    "initProductionData": "set NODE_ENV=production && node src/db/initFromData"
+    "production": "cross-env NODE_ENV=production && node src/app.js",
+    "initDevData": "cross-env NODE_ENV=development && node src/db/initFromData",
+    "initProductionData": "cross-env NODE_ENV=production && node src/db/initFromData"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   "homepage": "https://github.com/HonnDJG/Academic-Reference-Manager#readme",
   "dependencies": {
     "@hapi/boom": "^8.0.1",
+    "cross-env": "^6.0.3",
     "express": "^4.17.1",
     "moment": "^2.24.0",
     "mongoose": "^5.7.7"
