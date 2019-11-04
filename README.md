@@ -6,7 +6,6 @@ By:
 
 ## How to Install and Run
 
-
 ### Installation
 
 Make sure you have [NodeJS](https://nodejs.org/en/) installed. This was written with version 12.9.0 but newer versions and older (tested on 10.15.3) works as well. Installing NodeJS includes [npm](https://www.npmjs.com/), so you do not have to worry about that.
@@ -15,6 +14,8 @@ Whe NodeJS is installed, simply type in terminal/command line in root of the pro
 ```
 $ npm install
 ```
+
+> **Note:** There are no setup required for Database, see design documentation for more information
 
 ### Running
 after installing packets you have the following chocies to run: *'$' indicates being run in terminal/cmd*
@@ -37,7 +38,7 @@ The routes are accessible at `localhost:5000` followed by any following routes.
 
 **To enter authentication, you will have to enter the desired user type into the header in the "Authorization" field, user types are: "*auth*" and "*auth*", emit this for "*anonymous*" user type** 
 
-**Admin** users has access to all the following routes :neckbeard:
+**Admin** users has access to all the following routes
 
 | URI                                                | HTTP Method | Permitted User Types | Service           | Description                                                                |
 | -------------------------------------------------- | ----------- | -------------------- | ----------------- | -------------------------------------------------------------------------- |
