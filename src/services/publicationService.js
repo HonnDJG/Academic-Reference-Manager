@@ -183,9 +183,6 @@ module.exports = (context) => {
                 const loan = await db.Loan.getLoanByPublicationAndUserId(pid, uid);
                 const today = moment().startOf('day').toDate();
 
-                console.log(today < loan.borrow_date);
-                console.log(today);
-                console.log(loan);
                 if (today < loan.borrow_date) { throw boom.conflict("The user has not taken this book yet"); }
 
                 const result = await db.Loan.returnLoan(uid, pid, today);

@@ -32,7 +32,7 @@ module.exports = (context) => {
     router.post("/", permit("admin"), async (req, res) => {
         try {
             const user = await userService.createUser(req.body);
-            res.send(user);
+            res.status(201).send(user);
         } catch (e) {
             const message = e.output.payload;
             res.status(message.statusCode).send(message);
@@ -73,9 +73,6 @@ module.exports = (context) => {
     });
 
 
-
-
-
     // publications related information
     router.get("/:u_id/publications", permit("auth", "admin"), async (req, res) => {
         const { u_id } = req.params;
@@ -91,7 +88,7 @@ module.exports = (context) => {
     router.post("/:u_id/publications/:p_id", permit("auth", "admin"), async (req, res) => {
         try {
             const loan = await publicationService.loanPublication(req.params.u_id, req.params.p_id, req.body);
-            res.send(loan)
+            res.status(201).send(loan)
         } catch (e) {
             const message = e.output.payload;
             res.status(message.statusCode).send(message);
@@ -133,7 +130,7 @@ module.exports = (context) => {
         }
     });
 
-    //
+    
     router.get("/:u_id/reviews/:p_id", permit("auth", "admin"), async (req, res) => {
         const { u_id, p_id } = req.params;
         try {
@@ -149,7 +146,7 @@ module.exports = (context) => {
         const { u_id, p_id } = req.params;
         try {
             const result = await reviewService.createUserReview(p_id, u_id, req.body);
-            res.send(result);
+            res.status(201).send(result);
         } catch (e) {
             const message = e.output.payload;
             res.status(message.statusCode).send(message);

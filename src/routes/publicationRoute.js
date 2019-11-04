@@ -82,7 +82,7 @@ module.exports = (context) => {
     router.post("/", permit("admin"), async (req, res) => {
         try {
             const result = await publicationService.createPublication(req.body);
-            res.send(result);
+            res.status(201).send(result);
         } catch (e) {
             const message = e.output.payload;
             res.status(message.statusCode).send(message);
