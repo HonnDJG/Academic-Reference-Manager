@@ -4,12 +4,12 @@
   "description": "An API project for the course Software Architecture and Implementation",
   "main": "src/app.js",
   "scripts": {
-    "test": "env NODE_ENV=test jest --runInBand --detectOpenHandles",
-    "test:coverage": "env NODE_ENV=test jest --runInBand --coverage --detectOpenHandles",
+    "test": "set NODE_ENV=test && jest --runInBand --detectOpenHandles",
+    "test:coverage": "set NODE_ENV=test && jest --runInBand --coverage --detectOpenHandles",
     "start": "nodemon src/app.js",
-    "production": "env NODE_ENV=production node src/app.js",
-    "initDevData": "env NODE_ENV=development node src/db/initFromData",
-    "initProductionData": "env NODE_ENV=production node src/db/initFromData"
+    "production": "set NODE_ENV=production && node src/app.js",
+    "initDevData": "set NODE_ENV=development && node src/db/initFromData",
+    "initProductionData": "set NODE_ENV=production && node src/db/initFromData"
   },
   "repository": {
     "type": "git",
