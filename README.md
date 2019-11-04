@@ -88,7 +88,7 @@ They work as following:
 | */publications?LoanDate=YYYY-MM-DD*         | **GET**     | Admin                 | Publications list + users who loaned them                                                             |
 
 
-## Hasing used:
+## Hashing used:
 
 hasing is saved into shasum.txt in the root folder.
 
