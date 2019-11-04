@@ -23,7 +23,8 @@ describe("Test User queries", () => {
         "octTwentieth": new Date("2015-10-20"),
         "octThirtieth": new Date("2015-10-30"),
         "septThirtieth": new Date("2015-09-30"),
-        "novFirst": new Date("2015-11-01")
+        "novFirst": new Date("2015-11-01"),
+        "novFifth": new Date("2015-11-05")
     }
 
     beforeEach(async (done) => {
@@ -337,7 +338,7 @@ describe("Test User queries", () => {
         it("it should throw an error because of wrong publicationId", async (done) => {
             let users;
             try{
-                users = await db.Loan.getUsersOnLoanByDatesAndPublicationId("hehe", dates.septThirtieth, dates.octFifth);
+                users = await db.Loan.getUsersOnLoanByDatesAndPublicationId( hehe, dates.septThirtieth, dates.octFifth);
             } catch(e) {
                 errorCaught = true;
             }
@@ -357,130 +358,227 @@ describe("Test User queries", () => {
             done();
         });
     });
-    /*
-    describe("Users with loans on date", () => {
-        it("Should return those who borrowed on the day", async (done) => {
-            const queriedUsers = await db.User.getAllUsersWithOnGoingLoanOnDate(dates.octFirst);
-            expect(queriedUsers[0].first_name).toBe("user1");
-            expect(queriedUsers[1].first_name).toBe("user2");
-            expect(queriedUsers.length).toBe(2);
-
+    describe("getPublicationsOnLoanByDatesAndUserId", () => {
+        it("it should return a publication", async (done) => {
+            let publications;
+            try{
+                publications = await db.Loan.getPublicationsOnLoanByDatesAndUserId(createdUsers[1]._id , dates.septThirtieth, dates.octFifth);
+            } catch(e) {
+                errorCaught = true;
+            }
+            expect(errorCaught).toBe(false);
+            expect(publications.length).toBe(1);
             done();
         });
-
-        it("Should return those who have on going loans on date", async (done) => {
-            const queriedUsers = await db.User.getAllUsersWithOnGoingLoanOnDate(dates.octFifteenth);
-            expect(queriedUsers[0].first_name).toBe("user1");
-            expect(queriedUsers[1].first_name).toBe("user3");
-            expect(queriedUsers[2].first_name).toBe("user4");
-            expect(queriedUsers.length).toBe(3);
-
+        it("it should throw an error because of wrong userId", async (done) => {
+            let publications;
+            try{
+                publications = await db.Loan.getPublicationsOnLoanByDatesAndUserId("hehe", dates.septThirtieth, dates.octFifth);
+            } catch(e) {
+                errorCaught = true;
+            }
+            expect(errorCaught).toBe(true);
+            expect(publications).toBeUndefined();
             done();
         });
-
-        it("Should not return a person who returned on the date", async (done) => {
-            const queriedUsers = await db.User.getAllUsersWithOnGoingLoanOnDate(dates.octTenth);
-            expect(queriedUsers[0].first_name).toBe("user1");
-            expect(queriedUsers[1].first_name).toBe("user3");
-            expect(queriedUsers[2].first_name).toBe("user4");
-            expect(queriedUsers.length).toBe(3);
-
-            done();
-        });
-
-        it("Should not return people who have returned prior to the date", async (done) => {
-            const queriedUsers = await db.User.getAllUsersWithOnGoingLoanOnDate(dates.octThirtieth);
-            expect(queriedUsers[0].first_name).toBe("user3");
-            expect(queriedUsers[1].first_name).toBe("user4");
-            expect(queriedUsers.length).toBe(2);
-
-            done();
-        });
-
-        it("Should not return any thing on dates with no loans on going (before everything)", async (done) => {
-            const queriedUsers = await db.User.getAllUsersWithOnGoingLoanOnDate(dates.septThirtieth);
-            expect(queriedUsers.length).toBe(0);
-
-            done();
-        });
-
-        it("Should return only user with NULL return date", async (done) => {
-            const queriedUsers = await db.User.getAllUsersWithOnGoingLoanOnDate(dates.novFirst);
-            expect(queriedUsers[0].first_name).toBe("user3");
-            expect(queriedUsers.length).toBe(1);
-
+        it("it should return an empty list", async (done) => {
+            let publications;
+            try{
+                publications = await db.Loan.getPublicationsOnLoanByDatesAndUserId( createdUsers[0]._id, dates.septThirtieth, dates.octFifteenth);
+            } catch(e) {
+                errorCaught = true;
+            }
+            expect(errorCaught).toBe(false);
+            expect(publications.length).toBe(0);
             done();
         });
     });
-
-    describe("Users with loans longer than ", () => {
-
-        it("Should return everybody borrowing longer than 1 day", async (done) => {
-            const borrow_date = new Date("2015-10-04");
-            const return_date = new Date("2015-10-05");
-            const queriedUsers = await db.User.getAllUsersWithLoansLongerThanDurationOnDate(borrow_date, return_date);
-            expect(queriedUsers[0].first_name).toBe("user1");
-            expect(queriedUsers[1].first_name).toBe("user2");
-            expect(queriedUsers.length).toBe(2);
-
+    describe("getPublicationsOnLoanByPublicationIdAndDates", () => {
+        it("it should return a publication", async (done) => {
+            let publications;
+            try{
+                publications = await db.Loan.getPublicationsOnLoanByPublicationIdAndDates(createdPublications[0]._id , dates.septThirtieth, dates.octFifth);
+            } catch(e) {
+                errorCaught = true;
+            }
+            expect(errorCaught).toBe(false);
+            expect(publications.length).toBe(1);
             done();
         });
-
-        it("Should return nobody", async (done) => {
-            const borrow_date = new Date("2015-09-30");
-            const return_date = new Date("2015-10-01");
-            const queriedUsers = await db.User.getAllUsersWithLoansLongerThanDurationOnDate(borrow_date, return_date);
-            expect(queriedUsers.length).toBe(0);
-
+        it("it should throw an error because of wrong publicationId", async (done) => {
+            let publications;
+            try{
+                publications = await db.Loan.getPublicationsOnLoanByPublicationIdAndDates("hehe", dates.septThirtieth, dates.octFifth);
+            } catch(e) {
+                errorCaught = true;
+            }
+            expect(errorCaught).toBe(true);
+            expect(publications).toBeUndefined();
             done();
         });
-
-        it("Should return users who borrowed longer than 5 days", async (done) => {
-            let borrow_date = new Date("2015-10-01");
-            let return_date = new Date("2015-10-06");
-            let queriedUsers = await db.User.getAllUsersWithLoansLongerThanDurationOnDate(borrow_date, return_date);
-            expect(queriedUsers[0].first_name).toBe("user1");
-            expect(queriedUsers[1].first_name).toBe("user2");
-            expect(queriedUsers.length).toBe(2);
-
-
-            borrow_date = new Date("2016-01-01");
-            return_date = new Date("2016-01-06");
-            queriedUsers = await db.User.getAllUsersWithLoansLongerThanDurationOnDate(borrow_date, return_date);
-            expect(queriedUsers[0].first_name).toBe("user3");
-            expect(queriedUsers.length).toBe(1);
-
+        it("it should return an empty list", async (done) => {
+            let publications;
+            try{
+                publications = await db.Loan.getPublicationsOnLoanByPublicationIdAndDates( createdPublications[0]._id, dates.septThirtieth, dates.octFifteenth);
+            } catch(e) {
+                errorCaught = true;
+            }
+            expect(errorCaught).toBe(false);
+            expect(publications.length).toBe(0);
             done();
         });
-
-        it("Should return users who have borrowed longer than 10 days", async (done) => {
-            let borrow_date = new Date("2015-10-01");
-            let return_date = new Date("2015-10-11");
-            let queriedUsers = await db.User.getAllUsersWithLoansLongerThanDurationOnDate(borrow_date, return_date);
-            expect(queriedUsers[0].first_name).toBe("user1");
-            expect(queriedUsers.length).toBe(1);
-
-
-            borrow_date = new Date("2015-10-05");
-            return_date = new Date("2015-10-15");
-            queriedUsers = await db.User.getAllUsersWithLoansLongerThanDurationOnDate(borrow_date, return_date);
-            expect(queriedUsers[0].first_name).toBe("user1");
-            expect(queriedUsers[1].first_name).toBe("user4");
-            expect(queriedUsers.length).toBe(2);
-
-
-            borrow_date = new Date("2015-11-05");
-            return_date = new Date("2015-10-26");
-            queriedUsers = await db.User.getAllUsersWithLoansLongerThanDurationOnDate(borrow_date, return_date);
-            expect(queriedUsers[0].first_name).toBe("user3");
-            expect(queriedUsers[1].first_name).toBe("user4");
-            expect(queriedUsers.length).toBe(2);
-
-            done();
-        });
-
     });
-    */
+    describe("createLoan", () => {
+        it("Should create and return a loan", async (done) => {
+            let loan;
+            try {
+                loan = await db.Loan.createLoan({
+                    user: createdUsers[1],
+                    publication: createdPublications[1],
+                    borrow_date: dates.septThirtieth
+                });
+            } catch (e) {
+                errorCaught = true;
+            }
 
+            expect(errorCaught).toEqual(false);
+            expect(loan.borrow_date).toBe(dates.septThirtieth);
+            done();
+        });
 
+        it("Should throw ValidationError because of missing all required fields", async (done) => {
+            let loan;
+            try {
+                loan = await db.Loan.createLoan({
+                });
+            } catch (e) {
+                errorCaught = true;
+                expect(e.name).toBe("ValidationError");
+                expect(e.errors.user).toBeDefined();
+                expect(e.errors.publication).toBeDefined();
+                expect(e.errors.borrow_date).toBeDefined();
+            }
+
+            expect(errorCaught).toEqual(true);
+            expect(loan).toBeUndefined();
+            done();
+        });
+
+        it("Should throw ValidationError because of missing user", async (done) => {
+            let loan;
+            try {
+                loan = await db.Loan.createLoan({
+                    publication: createdPublications[1],
+                    borrow_date: 5
+                });
+            } catch (e) {
+                errorCaught = true;
+                expect(e.name).toBe("ValidationError");
+                expect(e.errors.user).toBeDefined();
+                expect(e.errors.publication).toBeUndefined();
+                expect(e.errors.borrow_date).toBeUndefined();
+            }
+
+            expect(errorCaught).toEqual(true);
+            expect(loan).toBeUndefined();
+            done();
+        });
+
+        it("Should throw error because of invalid user id", async (done) => {
+            let loan;
+            try {
+                loan = await db.Loan.createLoan({
+                    user: bla,
+                    publication: createdPublications[1],
+                    rating: 5
+                });
+            } catch (e) {
+                errorCaught = true;
+            }
+
+            expect(errorCaught).toEqual(true);
+            expect(loan).toBeUndefined();
+            done();
+        });
+    });
+    describe("updateLoan", () => {
+        it("should update and return updated loan", async (done) => {
+            let testLoan = createdLoans[0];
+            let loan;
+            try {
+                loan = await db.Loan.updateLoan({
+                    user: testLoan.user,
+                    publication: testLoan.publication,
+                    return_date: dates.novFifth
+                });
+            } catch (e) {
+                errorCaught = true;
+            }
+
+            expect(errorCaught).toEqual(false);
+            expect(loan.return_date).toEqual(dates.novFifth);
+            done();
+        });
+
+        it("should throw because of invalid userId", async (done) => {
+            let testLoan = createdLoans[0];
+            let loan;
+            try {
+                loan = await db.Loan.updateLoan( {
+                    user: "hehe",
+                    publication: testLoan.publication,
+                    return_date: dates.novFifth
+                });
+            } catch (e) {
+                errorCaught = true;
+            }
+
+            expect(errorCaught).toEqual(true);
+            expect(loan).toBeUndefined();
+            done();
+        });
+    });
+    describe("returnLoan", () => {
+        it("should update return date and return updated loan", async (done) => {
+            let testLoan = createdLoans[0];
+            let loan;
+            try {
+                loan = await db.Loan.returnLoan( testLoan.user, testLoan.publication, dates.novFifth);
+            } catch (e) {
+                errorCaught = true;
+            }
+
+            expect(errorCaught).toEqual(false);
+            expect(loan.return_date).toEqual(dates.novFifth);
+            done();
+        });
+
+        it("should throw invalid publicationID", async (done) => {
+            let testLoan = createdLoans[0];
+            let loan;
+            try {
+                loan = await db.Loan.returnLoan( testLoan.user, "hehe", dates.novFifth);
+            } catch (e) {
+                errorCaught = true;
+            }
+
+            expect(errorCaught).toEqual(true);
+            expect(loan).toBeUndefined();
+            done();
+        });
+        it("should throw invalid userID", async (done) => {
+            let testLoan = createdLoans[0];
+            let loan;
+            try {
+                loan = await db.Loan.returnLoan( "hehe", testLoan.publication, dates.novFifth);
+            } catch (e) {
+                errorCaught = true;
+            }
+
+            expect(errorCaught).toEqual(true);
+            expect(loan).toBeUndefined();
+            done();
+        });
+        
+    });
 });

@@ -295,7 +295,7 @@ describe("Test review queries", () => {
             done();
         });
 
-        it("Should throw ValidationError because of missing publication", async (done) => {
+        it("Should throw ValidationError because of missing rating", async (done) => {
             let review;
             try {
                 review = await db.Review.createUserReview({
