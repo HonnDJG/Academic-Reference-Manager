@@ -90,7 +90,7 @@ They work as following:
 
 ## Hashing used:
 
-hasing is saved into shasum.txt in the root folder.
+hashing is saved into shasum.txt in the root folder.
 
 ```
 find . -iname "*.js" | shasum -a 256 > shasum.txt
