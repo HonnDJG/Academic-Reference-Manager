@@ -102,7 +102,7 @@ module.exports = (context) => {
     router.delete("/:u_id/publications/:p_id", permit("auth", "admin"), async (req, res) => {
         try {
             const loan = await publicationService.returnPublication(req.params.u_id, req.params.p_id);
-            res.send(loan)
+            res.send(loan);
         } catch (e) {
             const message = e.output.payload;
             res.status(message.statusCode).send(message);
@@ -157,7 +157,7 @@ module.exports = (context) => {
         }
     });
 
-    router.delete("/:u_id/reviews/:p_id", permit("admin"), async (req, res) => {
+    router.delete("/:u_id/reviews/:p_id", permit("auth", "admin"), async (req, res) => {
         const { u_id, p_id } = req.params;
         try {
             const result = await reviewService.removeUserReview(p_id, u_id);

@@ -120,7 +120,7 @@ module.exports = (context) => {
 
 
     /// authorize user sem á review
-    router.put("/:p_id/reviews/:u_id", permit("auth", "admin"), async (req, res) => {
+    router.put("/:p_id/reviews/:u_id", permit("admin"), async (req, res) => {
         const { p_id, u_id } = req.params;
         try {
             const review = req.body;

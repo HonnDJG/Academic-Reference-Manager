@@ -27,7 +27,6 @@ module.exports = (context) => {
                 }
                 return publications;
             } catch (e) {
-                console.log(e);
                 throwCreator.createThrow(e);
             }
         },
@@ -38,7 +37,6 @@ module.exports = (context) => {
                 const publications = await db.Loan.getPublicationsOnLoanByDatesAndUserId(u_id, today, today);
                 return publications;
             } catch (e) {
-                console.log(e);
                 throwCreator.createThrow(e);
             }
         },
@@ -55,7 +53,6 @@ module.exports = (context) => {
                 })));
                 return publicationsWithUsers;
             } catch (e) {
-                console.log(e);
                 throwCreator.createThrow(e);
             }
         },
@@ -72,7 +69,6 @@ module.exports = (context) => {
                 })));
                 return publicationsWithUsers;
             } catch (e) {
-                console.log(e);
                 throwCreator.createThrow(e);
             }
         },
@@ -147,7 +143,6 @@ module.exports = (context) => {
                     return loan;
                 }
             } catch (e) {
-                console.log(e);
                 throwCreator.createThrow(e);
             }
         },
@@ -176,7 +171,6 @@ module.exports = (context) => {
                 }
 
             } catch (e) {
-                console.log(e);
                 throwCreator.createThrow(e);
             }
         },
@@ -197,7 +191,6 @@ module.exports = (context) => {
                 const result = await db.Loan.returnLoan(uid, pid, today);
                 return result;
             } catch (e) {
-                console.log(e);
                 throwCreator.createThrow(e);
             }
         },

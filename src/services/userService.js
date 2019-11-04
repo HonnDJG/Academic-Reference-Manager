@@ -30,7 +30,6 @@ module.exports = (context) => {
 
                 return usersWithLoan;
             } catch (e) {
-                console.log(e);
                 throwCreator.createThrow(e);
             }
         },
@@ -68,7 +67,6 @@ module.exports = (context) => {
 
                 return usersWithLoan;
             } catch (e) {
-                console.log(e);
                 throwCreator.createThrow(e);
             }
         },
