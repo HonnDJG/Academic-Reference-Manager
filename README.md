@@ -2,7 +2,7 @@
 By:
 - Daníel Ekaphan Valberg (danielv16@ru.is)
 - Grétar Örn Hjartarson (gretarh17@ru.is)
-- Joel Snær Garcia (joelg18@ru.is)
+- Jóel Snær Garcia (joelg18@ru.is)
 
 ## How to Install and Run
 

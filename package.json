@@ -4,7 +4,7 @@
   "description": "An API project for the course Software Architecture and Implementation",
   "main": "src/app.js",
   "scripts": {
-    "test": "NODE_ENV=test jest --runInBand",
+    "test": "jest --runInBand NODE_ENV=test",
     "test:coverage": "NODE_ENV=test jest --runInBand --coverage",
     "start": "nodemon src/app.js",
     "production": "NODE_ENV=production node src/app.js",

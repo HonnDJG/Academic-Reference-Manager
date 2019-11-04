@@ -38,23 +38,6 @@ describe("Test User queries", () => {
         done();
     });
 
-    describe("getAllUsers", () => {
-        it("should get all users", async (done) => {
-            const allUsers = await db.User.getAllUsers();
-
-            expect(createdUsers[0].first_name).toEqual(allUsers[0].first_name);
-            expect(createdUsers[0].first_name).toEqual(allUsers[0].first_name);
-            done();
-        });
-
-        it("it should return an empty array", async (done) => {
-            await db.User.deleteMany();
-            const allUsers = await db.User.getAllUsers();
-            expect(allUsers.length).toBe(0);
-            done();
-        });
-    });
-
     describe("checkExistence", () => {
         it("should not throw as user was found", async (done) => {
             const user = await db.User.findOne();
@@ -261,7 +244,7 @@ describe("Test User queries", () => {
         });
     });
 
-    describe("getUserById", () => {
+    describe("deleteUser", () => {
         it("should delete and return deleted user", async (done) => {
             const aUser = await db.User.findOne();
             let user;
@@ -283,6 +266,58 @@ describe("Test User queries", () => {
             let user;
             try {
                 user = await db.User.deleteUser("hello");
+            } catch (e) {
+                errorCaught = true;
+                expect(e.name).toEqual("CastError");
+            }
+
+            expect(errorCaught).toEqual(true);
+            expect(user).toBeUndefined();
+
+            done();
+        });
+        
+    });
+    describe("updateUserById", () => {
+        it("should update and return updated user", async (done) => {
+            const testUser = await db.User.findOne();
+            let user;
+            try {
+                user = await db.User.updateUser(testUser._id, {
+                    first_name: "newName"
+                });
+            } catch (e) {
+                errorCaught = true;
+            }
+
+            expect(errorCaught).toEqual(false);
+            expect(user.first_name).toBe("newName");
+            done();
+        });
+
+        it("should throw validationError because of invalid email", async (done) => {
+            const testUser = await db.User.findOne();
+            let user;
+            try {
+                user = await db.User.updateUser(testUser._id, {
+                    email: "nonEmail"
+                });
+            } catch (e) {
+                errorCaught = true;
+                expect(e.name).toBe("ValidationError");
+            }
+
+            expect(errorCaught).toEqual(true);
+            expect(user).toBeUndefined();
+            done();
+        });
+
+        it("should throw invalid ID", async (done) => {
+            let user;
+            try {
+                user = await db.User.updateUser("hello", {
+                    first_name: "newName"
+                });
             } catch (e) {
                 errorCaught = true;
                 expect(e.name).toEqual("CastError");
