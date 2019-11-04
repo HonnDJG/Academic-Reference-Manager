@@ -135,7 +135,7 @@ module.exports = (context) => {
                     const existingLoan = await db.Loan.getLoanByPublicationAndUserId(pid, uid);
                     if (existingLoan) { throw boom.conflict("User has already taken this publication out for loan!"); }
 
-                    const publicationOnLoan = await db.Loan.getIfPublicationOnLoanByDates(pid, body.borrow_date, body.return_date)
+                    const publicationOnLoan = await db.Loan.getPublicationsOnLoanByPublicationIdAndDates(pid, body.borrow_date, body.return_date)
                     if (publicationOnLoan.length != 0) { throw boom.conflict("This publication is already being loaned to someone!"); }
 
                     const loanBody = { user: uid, publication: pid, borrow_date: borrow_date.toDate(), return_date: return_date.toDate() }

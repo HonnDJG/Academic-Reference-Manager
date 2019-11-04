@@ -62,15 +62,8 @@ module.exports = {
         ]);
     },
 
-    getIfPublicationOnLoanByDates: function (p_id, borrow_date, return_date) {
-        return this.aggregate([
-            { $match: { publication: p_id, borrow_date: { $lte: borrow_date }, $or: [{ return_date: { $gt: return_date } }, { return_date: null }] } },
-            { $group: { _id: null, publication: { $addToSet: "$publication" } } },
-            { $unwind: "$publication" },
-            { $lookup: { from: 'publications', localField: 'publication', foreignField: '_id', as: 'publication' } },
-            { $unwind: "$publication" },
-            { $replaceRoot: { newRoot: "$publication" } }
-        ]);
+    getPublicationsOnLoanByPublicationIdAndDates: function (p_id, borrow_date, return_date) {
+        return this.find({ publication: p_id, borrow_date: { $lte: borrow_date }, $or: [{ return_date: { $gt: return_date } }, { return_date: null }] });
     },
 
     createLoan: function (loanObject) {
