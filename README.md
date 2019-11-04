@@ -2,7 +2,7 @@
 By:
 - Daníel Ekaphan Valberg (danielv16@ru.is)
 - Grétar Örn Hjartarson (gretarh17@ru.is)
-- Joel Snær Gacia (joelg18@ru.is)
+- Joel Snær Garcia (joelg18@ru.is)
 
 ## How to Install and Run
 
@@ -11,8 +11,13 @@ By:
 Make sure you have [NodeJS](https://nodejs.org/en/) installed. This was written with version 12.9.0 but newer versions and older (tested on 10.15.3) works as well. Installing NodeJS includes [npm](https://www.npmjs.com/), so you do not have to worry about that.
 
 Whe NodeJS is installed, simply type in terminal/command line in root of the project to install all dependencies: *'$' indicates being run in terminal/cmd*
-```
+```shell
 $ npm install
+```
+
+Next, if you would like to run tests, you must also install [Jest](https://jestjs.io/) into global dependency in npm. You can do that by simply entering
+```shell
+$ npm install -g jest
 ```
 
 > **Note:** There are no setup required for Database, see design documentation for more information
