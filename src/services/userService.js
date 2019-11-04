@@ -1,4 +1,7 @@
 
+/**
+ * User service
+ */
 module.exports = (context) => {
     const db = context('db')(context),
         boom = context('boom'),
@@ -14,7 +17,7 @@ module.exports = (context) => {
                 throwCreator.createThrow(e);
             }
         },
-
+        // gets values from query and gets users and the list of users publications they have on loan
         getUsersByDateAndDuration: async (query) => {
             const { loanDate, loanDuration } = query;
             try {
@@ -34,6 +37,7 @@ module.exports = (context) => {
             }
         },
 
+        // gets loanDate value from query and returns the list of users and publications they have on loan
         getUsersOnLoanByDate: async (query) => {
             const { loanDate } = query
             try {
@@ -51,6 +55,7 @@ module.exports = (context) => {
             }
         },
 
+        // gets loanDuration value from query and returns list of users and publications they have on loan
         getUsersByDuration: async (query) => {
             const { loanDuration } = query
             const borrow_date = moment().startOf('day').subtract(loanDuration, 'days').toDate();

@@ -1,3 +1,7 @@
+/**
+ * Run application
+ */
+
 const context = require('./IoC/context.js').newContext();
 
 const server = context('server')(context);

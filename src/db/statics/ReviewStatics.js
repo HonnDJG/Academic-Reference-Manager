@@ -43,6 +43,7 @@ module.exports = {
         });
     },
 
+    // gets a list recommended publication not in the borrowed_p_id_list array (of p_ids), grouped together by publication_id, averages the ratings and shows it
     getRecommendationExcludingBorrowed: function (borrowed_p_id_list) {
         return this.aggregate([
             { $match: { publication: { $nin: borrowed_p_id_list } } },

@@ -1,5 +1,8 @@
-const inject = require('./inject.js');
+/**
+ * Inversion of control Dependency setup
+ */
 
+const inject = require('./inject.js');
 
 module.exports = {
     newContext: () => {

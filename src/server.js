@@ -1,3 +1,7 @@
+/**
+ * Server setup
+ */
+
 module.exports = (context) => {
     const express = context("express");
     const app = express();
@@ -10,6 +14,7 @@ module.exports = (context) => {
     const publicationRoute = context("publicationRoute")(context);
     const userRoute = context("userRoute")(context);
 
+    // make req.query fields case insensitive for application and also validate query input
     app.use((req, res, next) => {
         req.query = new Proxy(req.query, {
             get: (target, name) => target[Object.keys(target)
@@ -41,6 +46,7 @@ module.exports = (context) => {
         next();
     });
 
+    // use routes files
     app.use('/Publications', publicationRoute);
     app.use('/users', userRoute);
 

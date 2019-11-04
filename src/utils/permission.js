@@ -1,3 +1,7 @@
+/**
+ * Permission middleware
+ */
+
 const boom = require('@hapi/boom');
 
 module.exports = (...allowed) => {

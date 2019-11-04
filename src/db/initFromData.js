@@ -24,7 +24,7 @@ const run = async (context) => {
         ...f
     }))
 
-
+    // get loans (publications) from Users.json and create new array of loans connecting the two.
     const loans = friendsWithOID.filter(f => f.publications ? f.publications : null)
         .map(f => {
             return f.publications.map(p => {
@@ -37,6 +37,7 @@ const run = async (context) => {
             })
         }).flat();
 
+    // generate reviews from ratings.json for seeding and testing
     const mappedReviews = reviews.map(r => {
         return {
             user: friendsWithOID.find(o => r.user == o.id)._id,
@@ -45,6 +46,7 @@ const run = async (context) => {
         }
     });
 
+    // clear and insert new data into database.
     try {
         await db.Publication.deleteMany();
         await db.Publication.insertMany(publicationsWithOID);

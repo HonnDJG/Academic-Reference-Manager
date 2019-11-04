@@ -1,3 +1,7 @@
+/**
+ * Setup mongoose connection to mongodb and export models + connection
+ */
+
 const userSchema = require('./schemas/User');
 const publicationSchema = require('./schemas/Publication');
 const loanSchema = require('./schemas/Loan');

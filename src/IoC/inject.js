@@ -1,3 +1,7 @@
+/**
+ * Dependency injector
+ */
+
 module.exports = (dependencies) => {
     dependencies = dependencies || {};
     let injector = dependencyName => {

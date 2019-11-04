@@ -1,3 +1,7 @@
+/**
+ * Configuration for application environments
+ */
+
 module.exports = (context) => ({
     development: {
         // mongoDB
