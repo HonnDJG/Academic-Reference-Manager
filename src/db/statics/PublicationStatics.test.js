@@ -76,7 +76,7 @@ describe("Test Publication queries", () => {
 
     describe("checkExistence", () => {
         it("should not throw as publication was found", async (done) => {
-            const publication = await db.Publication.findOne();
+            const publication = createdPublications[0];
 
             try {
                 await db.Publication.checkExistence(publication._id);
@@ -212,7 +212,7 @@ describe("Test Publication queries", () => {
     });
     describe("getPublicationById", () => {
         it("should find a publication", async (done) => {
-            const testPublication = await db.Publication.findOne();
+            const testPublication = createdPublications[0];
             let publication;
             try {
                 publication = await db.Publication.getPublicationById(testPublication._id);
@@ -254,7 +254,7 @@ describe("Test Publication queries", () => {
 
     describe("removePublicationById", () => {
         it("should delete and return deleted publication", async (done) => {
-            const testPublication = await db.Publication.findOne();
+            const testPublication = createdPublications[0];
             let publication;
             try {
                 publication = await db.Publication.removePublicationById(testPublication._id);
@@ -287,7 +287,7 @@ describe("Test Publication queries", () => {
     });
     describe("updatePublicationById", () => {
         it("should update and return updated publication", async (done) => {
-            const testPublication = await db.Publication.findOne();
+            const testPublication = createdPublications[0];
             let publication;
             try {
                 publication = await db.Publication.updatePublicationById(testPublication._id, {
@@ -303,7 +303,7 @@ describe("Test Publication queries", () => {
         });
 
         it("should throw validationError because of invalid type", async (done) => {
-            const testPublication = await db.Publication.findOne();
+            const testPublication = createdPublications[0];
             let publication;
             try {
                 publication = await db.Publication.updatePublicationById(testPublication._id, {

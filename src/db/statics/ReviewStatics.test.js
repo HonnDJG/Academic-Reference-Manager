@@ -63,45 +63,6 @@ describe("Test review queries", () => {
         done();
     });
 
-    describe("checkExistence", () => {
-        it("should not throw as review was found", async (done) => {
-            const review = await db.Review.findOne();
-
-            try {
-                await db.Review.checkExistence(review._id);
-            } catch (e) {
-                errorCaught = true;
-            }
-            expect(errorCaught).toEqual(false);
-
-            done();
-        });
-
-        it("should throw Cast when ID is invalid", async (done) => {
-            try {
-                await db.Review.checkExistence("123");
-            } catch (e) {
-                errorCaught = true;
-                expect(e.name).toBe("CastError");
-            }
-            expect(errorCaught).toEqual(true);
-
-            done();
-        });
-
-        it("should throw not found error", async (done) => {
-            try {
-                await db.Review.checkExistence("123123123123");
-            } catch (e) {
-                errorCaught = true;
-                expect(e.output.payload.error).toBe("Not Found");
-            }
-            expect(errorCaught).toEqual(true);
-
-            done();
-        });
-    });
-
     describe("getAllReviews", () => {
         it("should get all reviews", async (done) => {
             let allReviews;

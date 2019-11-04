@@ -40,7 +40,7 @@ describe("Test User queries", () => {
 
     describe("checkExistence", () => {
         it("should not throw as user was found", async (done) => {
-            const user = await db.User.findOne();
+            const user = createdUsers[0];
 
             try {
                 await db.User.checkExistence(user._id);
@@ -204,7 +204,7 @@ describe("Test User queries", () => {
 
     describe("getUserById", () => {
         it("should find a user", async (done) => {
-            const aUser = await db.User.findOne();
+            const aUser = createdUsers[0];
             let user;
             try {
                 user = await db.User.getUserById(aUser._id);
@@ -246,7 +246,7 @@ describe("Test User queries", () => {
 
     describe("deleteUser", () => {
         it("should delete and return deleted user", async (done) => {
-            const aUser = await db.User.findOne();
+            const aUser = createdUsers[0];
             let user;
             try {
                 user = await db.User.deleteUser(aUser._id);
@@ -280,7 +280,7 @@ describe("Test User queries", () => {
     });
     describe("updateUserById", () => {
         it("should update and return updated user", async (done) => {
-            const testUser = await db.User.findOne();
+            const testUser = createdUsers[0];
             let user;
             try {
                 user = await db.User.updateUser(testUser._id, {
@@ -296,7 +296,7 @@ describe("Test User queries", () => {
         });
 
         it("should throw validationError because of invalid email", async (done) => {
-            const testUser = await db.User.findOne();
+            const testUser = createdUsers[0];
             let user;
             try {
                 user = await db.User.updateUser(testUser._id, {
