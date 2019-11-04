@@ -45,6 +45,7 @@ module.exports = (context) => {
     app.use('/users', userRoute);
 
     return {
+        app: app,
         listen: () => {
             app.listen(port, () => {
                 console.log(`API up and listening on port: ${port}`)

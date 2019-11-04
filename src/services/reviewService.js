@@ -27,9 +27,10 @@ module.exports = (context) => {
             try {
                 await db.Publication.checkExistence(p_id);
                 await db.User.checkExistence(u_id);
-                const review = await db.Review.getReviewsByPublicationAndUserId(p_id, u_id);
+                const review = await db.Review.getReviewByPublicationAndUserId(p_id, u_id);
                 return review;
             } catch (e) {
+                console.log(e);
                 throwCreator.createThrow(e);
             }
 
@@ -40,7 +41,7 @@ module.exports = (context) => {
                 await db.User.checkExistence(u_id);
 
                 const existingReview = await db.Review.getReviewByPublicationAndUserId(p_id, u_id);
-                if (!existingReview) { throw boom.conflict("User has already reviewed this publication!"); }
+                if (existingReview) { throw boom.conflict("User has already reviewed this publication!"); }
 
                 const hasBorrowed = await db.Loan.getLoanByPublicationAndUserId(p_id, u_id);
                 if (!hasBorrowed) { throw boom.badRequest("User must have borrowed this publication!"); }

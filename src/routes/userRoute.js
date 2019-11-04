@@ -130,7 +130,7 @@ module.exports = (context) => {
         }
     });
 
-    //
+    
     router.get("/:u_id/reviews/:p_id", permit("auth", "admin"), async (req, res) => {
         const { u_id, p_id } = req.params;
         try {
