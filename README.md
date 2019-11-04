@@ -86,3 +86,13 @@ They work as following:
 | */publications?LoanDate=YYYY-MM-DD*         | **GET**     | Authenticated + Admin | **Authenticated** users get only publications list, **Admins** get publications + users who loan them |
 | */publications?LoanDuration=N*              | **GET**     | Admin                 | Publications list + users who loaned them                                                             |
 | */publications?LoanDate=YYYY-MM-DD*         | **GET**     | Admin                 | Publications list + users who loaned them                                                             |
+
+
+## Hasing used:
+
+hasing is saved into shasum.txt in the root folder.
+
+```
+find . -iname "*.js" | shasum -a 256 > shasum.txt
+find . -iname "*.json" | shasum -a 256 >> shasum.txt
+```
