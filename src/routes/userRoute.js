@@ -67,7 +67,6 @@ module.exports = (context) => {
             const user = await userService.updateUser(u_id, req.body);
             res.send(user);
         } catch (e) {
-            console.log(e);
             const message = e.output.payload;
             res.status(message.statusCode).send(message);
         }

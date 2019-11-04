@@ -28,7 +28,6 @@ module.exports = (context) => {
             }
             res.send(publications);
         } catch (e) {
-            console.log(e);
             const message = e.output.payload;
             res.status(message.statusCode).send(message);
         }
