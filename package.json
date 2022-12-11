@@ -24,7 +24,7 @@
   "dependencies": {
     "@hapi/boom": "^8.0.1",
     "cross-env": "^6.0.3",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "moment": "^2.24.0",
     "mongoose": "^5.7.7"
   },
